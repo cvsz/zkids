@@ -64,7 +64,17 @@ class GenerationJob(LockedModel):
     idempotency_key: str
     episode_id: str
     scene_id: str | None = None
-    kind: Literal["story", "character", "storyboard", "voice", "music", "image", "motion", "render", "publish"]
+    kind: Literal[
+        "story",
+        "character",
+        "storyboard",
+        "voice",
+        "music",
+        "image",
+        "motion",
+        "render",
+        "publish",
+    ]
     max_attempts: int = Field(default=3, ge=1, le=10)
     budget_limit: float = Field(default=0, ge=0)
     payload: dict[str, Any] = Field(default_factory=dict)
