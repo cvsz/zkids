@@ -111,7 +111,9 @@ class ControlPlaneService:
         ).fetchall()
         return [dict(json.loads(row[0])) for row in rows]
 
-    def put_storyboard(self, tenant_id: str, episode_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    def put_storyboard(
+        self, tenant_id: str, episode_id: str, payload: dict[str, Any]
+    ) -> dict[str, Any]:
         revision = int(payload.get("revision", 1))
         if revision < 1:
             raise ControlPlaneError("revision must be >= 1")
@@ -181,7 +183,9 @@ class ControlPlaneService:
             for row in rows
         ]
 
-    def put_variant(self, tenant_id: str, episode_id: str, payload: dict[str, Any]) -> dict[str, str]:
+    def put_variant(
+        self, tenant_id: str, episode_id: str, payload: dict[str, Any]
+    ) -> dict[str, str]:
         variant_id = _required(payload, "variant_id")
         language = _required(payload, "language")
         self.conn.execute(
@@ -213,6 +217,12 @@ class ControlPlaneService:
     ) -> PublishResult:
         if not approved or not approved_by:
             raise ControlPlaneError("human publish approval is required")
+        idempotency_key = idempotency_key.strip()
+        if not idempotency_key:
+            raise ControlPlaneError("idempotency_key is required")
+        destination = destination.strip()
+        if not destination:
+            raise ControlPlaneError("destination is required")
         prior = self.conn.execute(
             "SELECT publication_id,destination,external_id FROM publications "
             "WHERE tenant_id=? AND idempotency_key=?",
