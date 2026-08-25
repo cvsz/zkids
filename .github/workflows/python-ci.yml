@@ -1,0 +1,33 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]'
+      - run: ruff format --check .
+      - run: ruff check .
+      - run: mypy src/zkids
+      - run: bandit -q -r src/zkids
+      - run: pytest
+      - name: Offline CLI E2E
+        run: |
+          zkids validate examples/episode-001
+          zkids plan examples/episode-001/timeline.json > /tmp/plan.json
+          zkids qc examples/episode-001
+          zkids package examples/episode-001 --output /tmp/zkids-dist
+          test -f /tmp/zkids-dist/package-manifest.json
