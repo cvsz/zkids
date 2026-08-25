@@ -4,11 +4,43 @@ All notable changes to this project are documented here.
 
 The format is based on Keep a Changelog and the project follows Semantic Versioning.
 
-## [Unreleased]
+## [1.0.0] - 2026-08-26
 
 ### Added
 
-- v0.2 production provider adapter boundaries for image, voice, and motion/video generation
+- character registry/versioning persistence and tenant-scoped API
+- storyboard revision API
+- render job retry/cancel operator controls with audit events
+- QC review persistence
+- server-rendered tenant-scoped `/control` dashboard
+- deterministic fake publishing boundary for CI/offline validation
+- publication idempotency and replay protection
+- analytics ingestion with event-id idempotency
+- scene-level retention aggregation
+- multilingual and experiment/creative episode variants
+- PostgreSQL migration `0002_final_release.sql`
+- P3/P4 regression tests for tenant scoping, analytics, variants and publication gating
+
+### Changed
+
+- package version advanced to `1.0.0`
+- FastAPI application version advanced to `1.0.0`
+- readiness diagnostics now expose release version and publishing configuration mode
+- ROADMAP and EXEC-PLANNING mark P0 through P4 code-complete
+
+### Security
+
+- publication requires `approve_publish` permission and `HUMAN_PUBLISH_APPROVED` episode state
+- `approved_by` must match the authenticated publishing actor
+- provider and publishing credentials remain environment-only
+- no paid media generation or external publishing call is required in CI
+- all new metadata records are tenant-scoped
+
+## [0.2.0]
+
+### Added
+
+- production provider adapter boundaries for image, voice, and motion/video generation
 - S3-compatible object storage with local fallback and immutable content-addressed asset keys
 - PostgreSQL production job and usage-event schema foundation
 - Redis-compatible queue and worker entrypoint
@@ -16,14 +48,6 @@ The format is based on Keep a Changelog and the project follows Semantic Version
 - provider cost metering integrated with bounded budget accounting
 - production-like Docker Compose stack for API, worker, PostgreSQL, Redis, and MinIO
 - P2 unit/security/container validation and fake-provider integration coverage
-
-### Changed
-
-- package version advanced to `0.2.0`
-- Python CI now installs production extras and validates P2 files, Docker image build, and Compose configuration
-- API reports readiness/auth configuration and enforces `approve_publish` permission when authenticated
-
-### Fixed
 
 ### Security
 

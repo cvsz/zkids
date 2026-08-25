@@ -8,52 +8,59 @@
 - [x] Asset lineage DAG
 - [x] Hard/soft QC decision policy
 - [x] Budget accounting primitive
-- [x] Versioned JSON Schemas for series/character/episode/storyboard/scene/timeline/assets/jobs/QC/publication
+- [x] Versioned JSON Schemas
 - [x] SQLite/local durable repositories
 - [x] Deterministic dry-run providers
 - [x] Scene planner and timeline compiler
-- [x] FFmpeg/ffprobe capability detection and safe probe path
-- [x] CLI: validate / plan / qc / package
+- [x] FFmpeg/ffprobe safe path
+- [x] CLI validate / plan / qc / package
 - [x] Minimal FastAPI control plane
-- [x] Structured immutable audit events
-- [x] Docker runtime and local compose baseline
-- [x] Python lint/type/security/test/offline-E2E CI
-- [x] Offline end-to-end production-package test path
-
-### v0.1 exit criteria
-
-`examples/episode-001` must validate, plan, pass deterministic QC, and package without external credentials or paid provider calls. Publication remains fail-closed until explicit human approval.
+- [x] Immutable audit events
+- [x] Docker/local compose
+- [x] lint/type/security/test/offline-E2E CI
 
 ## v0.2 — Production provider/infrastructure adapters
 
-- [x] Image provider adapter boundary
-- [x] Voice provider adapter boundary
-- [x] Motion/video provider adapter boundary with reference/duration/aspect/resolution payloads
-- [x] S3-compatible object storage with local fallback and content-addressed keys
-- [x] PostgreSQL repository/migration foundation
-- [x] Redis-compatible worker queue and worker entrypoint
-- [x] Authentication/RBAC and tenant boundaries
-- [x] Provider-specific cost metering and production retry primitives
+- [x] Image / voice / motion provider boundaries
+- [x] S3-compatible object storage
+- [x] PostgreSQL repository/migrations
+- [x] Redis worker queue
+- [x] Authentication/RBAC/tenant boundaries
+- [x] Cost metering/retry primitives
 - [x] Environment-only provider credentials
-- [x] Production-like Compose stack: API / worker / PostgreSQL / Redis / MinIO
-- [x] P2 security/unit/container validation in CI
-
-### v0.2 exit criteria
-
-P2 must preserve the v0.1 offline path, perform no paid provider calls in CI, enforce tenant-scoped authorization when `ZKIDS_AUTH_SECRET` is configured, keep secrets out of persisted payloads, and preserve explicit human publish approval as a mandatory state/gate.
+- [x] Production Compose stack
+- [x] Security/unit/container CI
 
 ## v0.3 — Product control plane
 
-- [ ] Character library and versioning UI
-- [ ] Storyboard/scene editor
-- [ ] Render monitor and retry UI
-- [ ] QC review surface
-- [ ] Human approval UI
+- [x] Character library and versioning API/UI surface
+- [x] Storyboard/scene revision editor API
+- [x] Render job monitor with retry/cancel operations
+- [x] QC review surface/API
+- [x] Human approval and publication control surface
+- [x] Tenant-scoped dashboard
 
 ## v0.4 — Publishing and optimization
 
-- [ ] Publishing adapters behind explicit human approval
-- [ ] Analytics ingestion
-- [ ] Scene-level retention attribution
-- [ ] Multi-language episode variants
-- [ ] Experiment/creative variant model
+- [x] Publishing boundary behind explicit HUMAN_PUBLISH_APPROVED gate
+- [x] Deterministic fake publisher for offline/CI validation
+- [x] Publication idempotency/replay protection
+- [x] Analytics ingestion
+- [x] Scene-level retention attribution
+- [x] Multi-language episode variants
+- [x] Experiment/creative variant model
+- [x] PostgreSQL final-release migration
+
+## v1.0 — Final Release
+
+- [x] P0–P4 code-complete
+- [x] Offline-first path preserved
+- [x] Human publication remains fail-closed
+- [x] Tenant/RBAC boundaries preserved
+- [x] No provider credentials persisted
+- [x] No paid provider calls required in CI
+- [x] Release test coverage for control plane, analytics, variants and publishing
+
+### Production activation boundary
+
+`v1.0` is code-complete. Real external publishing or paid media generation still requires operator-owned provider credentials/accounts and explicit environment configuration. Those external account authorizations are deployment prerequisites, not repository code gaps.

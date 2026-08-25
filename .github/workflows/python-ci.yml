@@ -25,28 +25,36 @@ jobs:
             src/zkids/api.py \
             src/zkids/auth.py \
             src/zkids/cli.py \
+            src/zkids/control_plane.py \
             src/zkids/infrastructure.py \
             src/zkids/models.py \
             src/zkids/production.py \
             src/zkids/providers.py \
+            src/zkids/publishing.py \
             src/zkids/runtime.py \
             src/zkids/worker.py \
             tests/test_p1_offline.py \
-            tests/test_p2_production.py
+            tests/test_p2_production.py \
+            tests/test_p3_p4_final.py \
+            tests/test_publishing.py
       - name: Lint
         run: |
           ruff check \
             src/zkids/api.py \
             src/zkids/auth.py \
             src/zkids/cli.py \
+            src/zkids/control_plane.py \
             src/zkids/infrastructure.py \
             src/zkids/models.py \
             src/zkids/production.py \
             src/zkids/providers.py \
+            src/zkids/publishing.py \
             src/zkids/runtime.py \
             src/zkids/worker.py \
             tests/test_p1_offline.py \
-            tests/test_p2_production.py
+            tests/test_p2_production.py \
+            tests/test_p3_p4_final.py \
+            tests/test_publishing.py
       - run: mypy src/zkids
       - run: bandit -q -r src/zkids
       - run: pytest
@@ -58,6 +66,6 @@ jobs:
           zkids package examples/episode-001 --output /tmp/zkids-dist
           test -f /tmp/zkids-dist/package-manifest.json
       - name: Docker build
-        run: docker build -t zkids:p2 .
+        run: docker build -t zkids:v1 .
       - name: Compose validation
         run: docker compose -f compose.production.yml config >/tmp/compose.yml
