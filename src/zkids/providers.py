@@ -122,7 +122,7 @@ class JSONHTTPProvider:
             },
         )
         try:
-            with urllib.request.urlopen(  # noqa: S310 - endpoint is operator configured
+            with urllib.request.urlopen(  # nosec B310 - trusted operator-configured endpoint
                 http_request, timeout=self.config.timeout_seconds
             ) as response:
                 raw = response.read().decode("utf-8")
