@@ -70,7 +70,7 @@ class AssetGraph:
 
 
 class QCDecision(StrEnum):
-    PASS = "PASS"
+    PASS = "PASS"  # nosec B105 - workflow status token, not a credential
     RETRY = "RETRY"
     MANUAL_REVIEW = "MANUAL_REVIEW"
     FAIL = "FAIL"
