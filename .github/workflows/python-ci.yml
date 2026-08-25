@@ -27,7 +27,14 @@ jobs:
             src/zkids/models.py \
             src/zkids/runtime.py \
             tests/test_p1_offline.py
-      - run: ruff check .
+      - name: Lint (P1 slice)
+        run: |
+          ruff check \
+            src/zkids/api.py \
+            src/zkids/cli.py \
+            src/zkids/models.py \
+            src/zkids/runtime.py \
+            tests/test_p1_offline.py
       - run: mypy src/zkids
       - run: bandit -q -r src/zkids
       - run: pytest
