@@ -47,11 +47,11 @@ class LocalObjectStore:
 class S3ObjectStore:
     def __init__(self, *, bucket: str, endpoint_url: str | None = None) -> None:
         try:
-            import boto3
+            import boto3  # type: ignore[import-untyped]  # boto3 has no py.typed marker
         except ImportError as exc:  # pragma: no cover - optional production dependency
             raise InfrastructureError("install zkids[production] for S3 support") from exc
         self.bucket = bucket
-        self.client = boto3.client(
+        self.client: Any = boto3.client(
             "s3",
             endpoint_url=endpoint_url,
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
@@ -71,7 +71,7 @@ class S3ObjectStore:
         return f"s3://{self.bucket}/{key}"
 
     def get_bytes(self, key: str) -> bytes:
-        response = self.client.get_object(Bucket=self.bucket, Key=key)
+        response: Any = self.client.get_object(Bucket=self.bucket, Key=key)
         return bytes(response["Body"].read())
 
 
@@ -87,7 +87,7 @@ class RedisQueue:
             import redis
         except ImportError as exc:  # pragma: no cover
             raise InfrastructureError("install zkids[production] for Redis support") from exc
-        self.client = redis.Redis.from_url(url, decode_responses=True)
+        self.client: Any = redis.Redis.from_url(url, decode_responses=True)
         self.queue_name = queue_name
 
     def enqueue(self, message: QueueMessage) -> None:
@@ -96,12 +96,22 @@ class RedisQueue:
         )
 
     def lease(self, timeout_seconds: int = 5) -> QueueMessage | None:
-        item = self.client.blpop(self.queue_name, timeout=timeout_seconds)
+        item: Any = self.client.blpop([self.queue_name], timeout=timeout_seconds)
         if item is None:
             return None
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            raise InfrastructureError("unexpected Redis lease response")
         _, raw = item
+        if not isinstance(raw, str):
+            raise InfrastructureError("Redis lease payload must be text")
         payload = json.loads(raw)
-        return QueueMessage(job_id=payload["job_id"], payload=payload["payload"])
+        if not isinstance(payload, dict):
+            raise InfrastructureError("Redis lease payload must be a JSON object")
+        job_id = payload.get("job_id")
+        job_payload = payload.get("payload")
+        if not isinstance(job_id, str) or not isinstance(job_payload, dict):
+            raise InfrastructureError("Redis lease payload is missing required fields")
+        return QueueMessage(job_id=job_id, payload=job_payload)
 
 
 class PostgresRepository:
@@ -172,8 +182,8 @@ def immutable_asset_key(*, tenant_id: str, episode_id: str, data: bytes, suffix:
 def retry_delay_seconds(attempt: int, *, base: float = 1.0, cap: float = 30.0) -> float:
     if attempt < 1:
         raise ValueError("attempt must be >= 1")
-    return min(cap, base * (2 ** (attempt - 1)))
+    return float(min(cap, base * (2 ** (attempt - 1))))
 
 
 def lease_deadline(seconds: int) -> float:
-    return time.time() + seconds
+    return float(time.time() + seconds)
