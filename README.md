@@ -1,78 +1,31 @@
-# ztemplate
+# zkids
 
-A production-ready, reusable GitHub repository template for starting new projects with consistent engineering, security, documentation, automation, and release practices.
+`zkids` is an offline-first production control plane and media-pipeline foundation for original children's animation.
 
-## Included
+## v0.1 foundation
 
-- Issue and pull request templates
-- CODEOWNERS and repository contribution guidance
-- Security policy and support policy
-- CI workflow baseline
-- CodeQL security scanning
-- Dependency Review for pull requests
-- Dependabot configuration
-- Release workflow and release notes configuration
-- Conventional commit / PR guidance
-- EditorConfig, Git attributes, and Git ignore baseline
-- Community health files
-- Documentation structure
-- Changelog and roadmap templates
-- Implementation checklist
-- Architecture Decision Record (ADR) template
-- Environment example
-- Docker baseline
-- Makefile task entrypoints
+The first implementation slice establishes:
 
-## Start from this template
+- explicit Episode, Scene, and Generation Job state machines
+- typed prompt compilation from locked character + scene contracts
+- provider capability negotiation instead of vendor-coupled orchestration
+- asset lineage DAG and downstream invalidation discovery
+- fail-closed deterministic QC policy with separate soft quality scores
+- bounded budget accounting for generation work
 
-1. Use this repository as a GitHub template repository.
-2. Create a new repository from the template.
-3. Replace placeholder project metadata.
-4. Review and customize `.github/CODEOWNERS`, `SECURITY.md`, CI matrices, and release settings.
-5. Add language/framework-specific workflows only when the project needs them.
+The architecture intentionally keeps real image, voice, music, motion-video, and publishing providers behind adapters. No paid provider credentials are required for the core package.
 
-## Repository structure
+## Development
 
-```text
-.github/
-  ISSUE_TEMPLATE/
-  workflows/
-  CODEOWNERS
-  CONTRIBUTING.md
-  PULL_REQUEST_TEMPLATE.md
-  dependabot.yml
-  release.yml
-  SUPPORT.md
-docs/
-  adr/
-  architecture.md
-  development.md
-  release.md
-.env.example
-.editorconfig
-.gitattributes
-.gitignore
-CHANGELOG.md
-CODE_OF_CONDUCT.md
-Dockerfile
-IMPLEMENTATION-CHECKLIST.md
-LICENSE
-Makefile
-README.md
-ROADMAP.md
-SECURITY.md
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -e '.[dev]'
+ruff check .
+mypy src/zkids
+pytest
 ```
 
-## Principles
+## Safety boundary
 
-- Secure by default
-- Least privilege for GitHub Actions
-- Reproducible automation
-- Small, reviewable pull requests
-- Documentation as part of delivery
-- No weakening of security gates to make CI green
-- Explicit release and rollback practices
-
-## License
-
-MIT. See `LICENSE`.
+Publication is a separate state transition and must never occur without explicit `HUMAN_PUBLISH_APPROVED` state. Provider adapters must attach provenance and satisfy deterministic validation before an asset becomes eligible for downstream production.
