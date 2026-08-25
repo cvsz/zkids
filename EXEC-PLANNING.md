@@ -20,7 +20,7 @@ Acceptance criteria:
 
 ## Slice P1 — Offline vertical slice
 
-Status: IMPLEMENTED IN PR #6; merge only after all repository gates pass.
+Status: COMPLETE / MERGED IN PR #6
 
 Delivered:
 
@@ -37,35 +37,43 @@ Delivered:
 11. Format, lint, strict typing, Bandit, pytest, existing CI, CodeQL, dependency review, and offline CLI E2E gates.
 12. Sample `examples/episode-001` production package path requiring no external credentials.
 
-## v0.1 release gate
-
-`v0.1.0` is releasable only when the PR head is green for all configured CI/security checks. The offline E2E must prove:
-
-```text
-examples/episode-001
-  -> validate
-  -> deterministic timeline plan
-  -> deterministic QC
-  -> package-manifest.json
-  -> READY_FOR_HUMAN_REVIEW
-```
-
-Publication remains denied until explicit human approval. Real paid provider integration is intentionally outside v0.1.
-
 ## Slice P2 — Production provider/infrastructure adapters
 
-Next after v0.1:
+Status: IMPLEMENTED ON `feat/p2-production-adapters`; merge only after all repository gates pass.
 
-1. Image and voice provider adapters.
-2. Motion/video adapter behind `MotionProvider` and capability negotiation.
-3. S3-compatible object storage and immutable asset addressing.
-4. PostgreSQL repositories and Redis-compatible worker queue.
-5. Authentication/RBAC and tenant boundaries.
-6. Provider cost metering, durable retry telemetry, and worker leasing.
-7. Model-assisted QC that cannot override deterministic hard failures.
-8. Publishing adapters behind durable human approval.
-9. Analytics ingestion and scene-level feedback loop.
+Delivered:
+
+1. Vendor-neutral HTTP production adapter boundary for image, voice, and motion/video generation.
+2. Motion request shape supports image input, reference assets, duration, aspect ratio, and resolution while retaining existing capability negotiation.
+3. Environment-only provider credentials; no provider secret is accepted in persisted job payloads.
+4. `LocalObjectStore` plus optional S3-compatible object storage and immutable SHA-256 asset keys.
+5. PostgreSQL production-job/usage-event repository foundation plus versioned SQL migration.
+6. Redis-compatible durable queue and a worker entrypoint for leased jobs.
+7. Signed bearer-token authentication, role-based permissions, tenant claims, tenant-scoped episode/job reads, and explicit publisher permission for human publish approval.
+8. Cost metering around provider execution with existing budget accounting as the fail-closed spend limit.
+9. Deterministic fake provider path for CI and integration tests; CI performs no paid provider request.
+10. Production-like Compose stack: API, worker, PostgreSQL, Redis, and MinIO.
+11. `/readyz` and `/v1/auth/whoami` control-plane diagnostics.
+12. P2 tests for RBAC, tenant claims, immutable storage keys, cost/budget enforcement, motion request mapping, and retry backoff.
+13. CI expansion to production extras, Docker image build, and Compose validation.
+
+## v0.2 release gate
+
+P2 is releasable only when:
+
+- existing v0.1 offline E2E remains green;
+- P2 format/lint/mypy/Bandit/pytest pass;
+- repository CI, CodeQL, and dependency review pass;
+- Docker build and Compose validation pass;
+- authentication remains opt-in for offline development but is enabled whenever `ZKIDS_AUTH_SECRET` is set;
+- human publish approval remains fail-closed and requires `approve_publish` permission;
+- provider credentials come from environment variables only;
+- CI uses only fake/local providers and performs no paid external generation calls.
+
+## Next after P2
+
+P3 / v0.3 is the product control plane: character versioning, storyboard editor, render monitor/retry surface, QC review, and human approval UI. Publishing adapters and analytics feedback remain v0.4 scope.
 
 ## Rollback
 
-P1 remains additive. Revert PR #6 to return to the P0 baseline; no external provider mutation, cloud resource, or production database migration is introduced by v0.1.
+P2 is additive to the P1 contracts. Revert the P2 merge commit to return to the v0.1 offline baseline. The repository does not automatically provision or mutate external provider accounts; PostgreSQL/Redis/S3 adapters require explicit operator configuration.
