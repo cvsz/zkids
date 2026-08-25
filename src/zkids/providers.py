@@ -1,4 +1,5 @@
 """Provider capability negotiation and production adapter boundaries."""
+
 from __future__ import annotations
 
 import json
