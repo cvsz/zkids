@@ -8,12 +8,16 @@ from zkids.auth import AuthError, Role, issue_token, verify_token
 from zkids.domain import BudgetError
 from zkids.infrastructure import LocalObjectStore, immutable_asset_key, retry_delay_seconds
 from zkids.production import ProductionExecutor
-from zkids.providers import FakeProvider, MotionProvider, HTTPProviderConfig
+from zkids.providers import FakeProvider, HTTPProviderConfig, MotionProvider
 
 
 def test_auth_rbac_and_tenant_claims() -> None:
     token = issue_token(
-        subject="alice", tenant_id="tenant-a", role=Role.PUBLISHER, ttl_seconds=60, secret="test-secret"
+        subject="alice",
+        tenant_id="tenant-a",
+        role=Role.PUBLISHER,
+        ttl_seconds=60,
+        secret="test-secret",
     )
     principal = verify_token(token, secret="test-secret", now=1)
     assert principal.tenant_id == "tenant-a"
