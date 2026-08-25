@@ -27,7 +27,7 @@ class SQLiteStore:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(self.path)
+        self.conn = sqlite3.connect(self.path, check_same_thread=False)
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.executescript(
             """
@@ -76,7 +76,7 @@ class SQLiteStore:
         ).fetchone()
         if row is None:
             return None
-        payload: dict[str, Any] = json.loads(row[0])
+        payload = dict(json.loads(row[0]))
         payload["state"] = row[1]
         return payload
 
@@ -90,7 +90,7 @@ class SQLiteStore:
         if row:
             return {
                 "job_id": row[0],
-                "payload": json.loads(row[1]),
+                "payload": dict(json.loads(row[1])),
                 "state": row[2],
                 "attempts": row[3],
                 "reused": True,
@@ -155,7 +155,7 @@ def ffprobe(path: Path) -> dict[str, Any]:
     )
     if proc.returncode != 0:
         raise RuntimeErrorZKids(proc.stderr.strip() or "ffprobe failed")
-    result: dict[str, Any] = json.loads(proc.stdout)
+    result = dict(json.loads(proc.stdout))
     return result
 
 
