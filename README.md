@@ -2,27 +2,26 @@
 
 `zkids` is an offline-first production control plane and media-pipeline foundation for original children's animation.
 
-## v0.1 offline vertical slice
+## v0.2 production adapter foundation
 
-The v0.1 baseline provides:
+The current baseline includes the complete v0.1 offline path plus:
 
-- explicit Episode, Scene, and Generation Job state machines
-- typed prompt compilation from locked character + scene contracts
-- provider capability negotiation instead of vendor-coupled orchestration
-- asset lineage DAG and downstream invalidation discovery
-- fail-closed deterministic QC policy with separate soft quality scores
-- bounded budget accounting and idempotent generation jobs
-- JSON Schema 2020-12 + typed Pydantic production contracts
-- SQLite episode/job persistence with append-only audit events
-- deterministic dry-run provider behavior
-- timeline overlap/gap validation
-- safe `ffprobe` capability/probe path
-- CLI and FastAPI control-plane surfaces
-- Docker and Python quality/security/offline-E2E CI
+- vendor-neutral image, voice, and motion/video HTTP adapter boundaries
+- provider capability negotiation before expensive motion generation
+- environment-only provider credentials
+- local and S3-compatible object storage with immutable SHA-256 asset keys
+- PostgreSQL production-job/usage-event schema foundation
+- Redis-compatible worker queue and worker entrypoint
+- signed bearer authentication, RBAC, and tenant-scoped episode/job access
+- explicit `approve_publish` permission for human publish approval
+- provider cost metering integrated with bounded budget accounting
+- readiness/auth diagnostics
+- production-like Compose stack with API, worker, PostgreSQL, Redis, and MinIO
+- fake/local providers for CI so validation never incurs paid generation cost
 
-The architecture intentionally keeps real image, voice, music, motion-video, and publishing providers behind adapters. No paid provider credentials are required for the v0.1 package.
+The architecture keeps publication fail-closed. Packaging, rendering, or successful generation never grants permission to publish.
 
-## Quick start
+## Offline quick start
 
 ```bash
 python -m venv .venv
@@ -35,7 +34,15 @@ zkids qc examples/episode-001
 zkids package examples/episode-001 --output dist/episode-001
 ```
 
-The output package remains `READY_FOR_HUMAN_REVIEW`; packaging never implies permission to publish.
+The output package remains `READY_FOR_HUMAN_REVIEW`.
+
+## Production dependencies
+
+```bash
+pip install -e '.[production]'
+```
+
+Production extras install the PostgreSQL, Redis, and S3-compatible storage clients. Provider credentials are not accepted through request payloads; configure them using environment variables only.
 
 ## API
 
@@ -43,27 +50,55 @@ The output package remains `READY_FOR_HUMAN_REVIEW`; packaging never implies per
 uvicorn zkids.api:app --host 127.0.0.1 --port 8000
 ```
 
-Initial endpoints include health, validation, episode registration/state, idempotent generation jobs, explicit approval gates, render planning, and a fail-closed publication readiness check.
+Useful endpoints include:
+
+- `GET /healthz`
+- `GET /readyz`
+- `GET /v1/auth/whoami`
+- contract validation and episode/job control surfaces
+- explicit state-machine approval gates
+- render planning
+- fail-closed publication readiness checking
+
+When `ZKIDS_AUTH_SECRET` is set, protected endpoints require signed bearer tokens. Offline development remains usable without authentication configuration.
+
+## Production-like local stack
+
+```bash
+cp .env.example .env
+# Replace all development secrets before exposing the stack.
+docker compose -f compose.production.yml up --build
+```
+
+The stack provides:
+
+```text
+API
+ ├─ PostgreSQL
+ ├─ Redis queue
+ └─ MinIO / S3-compatible object storage
+
+Worker
+ ├─ PostgreSQL
+ ├─ Redis queue
+ └─ MinIO / S3-compatible object storage
+```
 
 ## Development gates
 
 ```bash
-ruff format --check src/zkids/api.py src/zkids/cli.py src/zkids/models.py src/zkids/runtime.py tests/test_p1_offline.py
-ruff check src/zkids/api.py src/zkids/cli.py src/zkids/models.py src/zkids/runtime.py tests/test_p1_offline.py
+pip install -e '.[dev,production]'
+ruff format --check src/zkids tests/test_p1_offline.py tests/test_p2_production.py
+ruff check src/zkids tests/test_p1_offline.py tests/test_p2_production.py
 mypy src/zkids
 bandit -q -r src/zkids
 pytest
+docker build -t zkids:0.2 .
+docker compose -f compose.production.yml config
 ```
 
-## Container
-
-```bash
-docker build -t zkids:0.1 .
-docker compose -f deploy/docker-compose.yml up --build
-```
-
-The container runs as a non-root user and the Compose baseline drops Linux capabilities, enables `no-new-privileges`, and keeps the root filesystem read-only while persisting local runtime state in the dedicated `.tmp` volume.
+CI also retains the complete offline CLI E2E path.
 
 ## Safety boundary
 
-Publication is a separate state transition and must never occur without explicit `HUMAN_PUBLISH_APPROVED` state. Provider adapters must attach provenance and satisfy deterministic validation before an asset becomes eligible for downstream production.
+Publication is a separate state transition and must never occur without explicit `HUMAN_PUBLISH_APPROVED` state. In authenticated production mode, the actor must also hold `approve_publish` permission. Provider adapters must attach provenance/cost metadata and satisfy deterministic validation before an asset becomes eligible for downstream production.

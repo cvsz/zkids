@@ -1,0 +1,68 @@
+services:
+  api:
+    build: .
+    command: ["uvicorn", "zkids.api:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      ZKIDS_AUTH_SECRET: ${ZKIDS_AUTH_SECRET:-development-only-change-me}
+      DATABASE_URL: postgresql://zkids:zkids@postgres:5432/zkids
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_BUCKET: zkids
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-zkids}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-zkids-development}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+
+  worker:
+    build: .
+    command: ["python", "-m", "zkids.worker"]
+    environment:
+      DATABASE_URL: postgresql://zkids:zkids@postgres:5432/zkids
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_BUCKET: zkids
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-zkids}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-zkids-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: zkids
+      POSTGRES_USER: zkids
+      POSTGRES_PASSWORD: zkids
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zkids -d zkids"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-zkids}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-zkids-development}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
