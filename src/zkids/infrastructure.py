@@ -91,7 +91,9 @@ class RedisQueue:
         self.queue_name = queue_name
 
     def enqueue(self, message: QueueMessage) -> None:
-        self.client.rpush(self.queue_name, json.dumps({"job_id": message.job_id, "payload": message.payload}))
+        self.client.rpush(
+            self.queue_name, json.dumps({"job_id": message.job_id, "payload": message.payload})
+        )
 
     def lease(self, timeout_seconds: int = 5) -> QueueMessage | None:
         item = self.client.blpop(self.queue_name, timeout=timeout_seconds)
