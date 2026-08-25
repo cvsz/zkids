@@ -12,7 +12,7 @@ RUN apt-get update \
 COPY pyproject.toml README.md ./
 COPY src ./src
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir '.[production]'
 
 RUN useradd --create-home --uid 10001 zkids \
     && mkdir -p /app/.tmp \
