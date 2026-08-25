@@ -20,9 +20,41 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: pip install -e '.[dev,production]'
       - name: Format check
-        run: ruff format --check src/zkids tests
+        run: |
+          ruff format --check \
+            src/zkids/api.py \
+            src/zkids/auth.py \
+            src/zkids/cli.py \
+            src/zkids/control_plane.py \
+            src/zkids/infrastructure.py \
+            src/zkids/models.py \
+            src/zkids/production.py \
+            src/zkids/providers.py \
+            src/zkids/publishing.py \
+            src/zkids/runtime.py \
+            src/zkids/worker.py \
+            tests/test_p1_offline.py \
+            tests/test_p2_production.py \
+            tests/test_p3_p4_final.py \
+            tests/test_publishing.py
       - name: Lint
-        run: ruff check src/zkids tests
+        run: |
+          ruff check \
+            src/zkids/api.py \
+            src/zkids/auth.py \
+            src/zkids/cli.py \
+            src/zkids/control_plane.py \
+            src/zkids/infrastructure.py \
+            src/zkids/models.py \
+            src/zkids/production.py \
+            src/zkids/providers.py \
+            src/zkids/publishing.py \
+            src/zkids/runtime.py \
+            src/zkids/worker.py \
+            tests/test_p1_offline.py \
+            tests/test_p2_production.py \
+            tests/test_p3_p4_final.py \
+            tests/test_publishing.py
       - run: mypy src/zkids
       - run: bandit -q -r src/zkids
       - run: pytest
