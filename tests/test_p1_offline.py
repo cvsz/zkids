@@ -5,14 +5,23 @@ from fastapi.testclient import TestClient
 
 from zkids.api import app
 from zkids.models import Publication
-from zkids.runtime import DryRunProvider, RuntimeErrorZKids, SQLiteStore, TimelineItem, compile_timeline, safe_child
+from zkids.runtime import (
+    DryRunProvider,
+    RuntimeErrorZKids,
+    SQLiteStore,
+    TimelineItem,
+    compile_timeline,
+    safe_child,
+)
 
 
 def test_timeline_compiles_without_gaps() -> None:
-    plan = compile_timeline([
-        TimelineItem("S1", 0, 8),
-        TimelineItem("S2", 8, 8),
-    ])
+    plan = compile_timeline(
+        [
+            TimelineItem("S1", 0, 8),
+            TimelineItem("S2", 8, 8),
+        ]
+    )
     assert plan["duration"] == 16
     assert plan["warnings"] == []
 
@@ -60,14 +69,16 @@ def test_health_and_validation() -> None:
             "title": "Test",
             "language": "th",
             "duration_target": 8,
-            "scenes": [{
-                "scene_id": "S1",
-                "start": 0,
-                "duration": 8,
-                "characters": ["C1"],
-                "action": "walk",
-                "camera": {},
-            }],
+            "scenes": [
+                {
+                    "scene_id": "S1",
+                    "start": 0,
+                    "duration": 8,
+                    "characters": ["C1"],
+                    "action": "walk",
+                    "camera": {},
+                }
+            ],
         },
     }
     response = client.post("/v1/validate", json=payload)
