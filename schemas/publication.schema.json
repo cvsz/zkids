@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"Publication","type":"object","additionalProperties":false,"required":["episode_id","human_approved"],"properties":{"episode_id":{"type":"string"},"human_approved":{"type":"boolean"},"approved_by":{"type":["string","null"]},"destination":{"type":["string","null"]}}}
