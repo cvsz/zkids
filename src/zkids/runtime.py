@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 import sqlite3
-import subprocess
+import subprocess  # nosec B404 - fixed executable, shell is never used
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -145,10 +145,11 @@ def ffmpeg_available() -> bool:
 def ffprobe(path: Path) -> dict[str, Any]:
     if not path.exists():
         raise RuntimeErrorZKids(f"media does not exist: {path}")
-    if not ffmpeg_available():
-        raise RuntimeErrorZKids("ffmpeg/ffprobe unavailable")
-    proc = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_format", "-show_streams", "-of", "json", str(path)],
+    executable = shutil.which("ffprobe")
+    if executable is None:
+        raise RuntimeErrorZKids("ffprobe unavailable")
+    proc = subprocess.run(  # nosec B603 - absolute executable, shell=False, fixed arguments
+        [executable, "-v", "error", "-show_format", "-show_streams", "-of", "json", str(path)],
         capture_output=True,
         text=True,
         check=False,
