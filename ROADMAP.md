@@ -24,16 +24,23 @@
 
 `examples/episode-001` must validate, plan, pass deterministic QC, and package without external credentials or paid provider calls. Publication remains fail-closed until explicit human approval.
 
-## v0.2 — Real provider adapters
+## v0.2 — Production provider/infrastructure adapters
 
-- [ ] Image provider adapter
-- [ ] Voice provider adapter
-- [ ] Motion/video provider adapter
-- [ ] S3-compatible object storage
-- [ ] PostgreSQL repository
-- [ ] Redis-compatible worker queue
-- [ ] Authentication/RBAC and tenant boundaries
-- [ ] Provider-specific cost metering and production retry telemetry
+- [x] Image provider adapter boundary
+- [x] Voice provider adapter boundary
+- [x] Motion/video provider adapter boundary with reference/duration/aspect/resolution payloads
+- [x] S3-compatible object storage with local fallback and content-addressed keys
+- [x] PostgreSQL repository/migration foundation
+- [x] Redis-compatible worker queue and worker entrypoint
+- [x] Authentication/RBAC and tenant boundaries
+- [x] Provider-specific cost metering and production retry primitives
+- [x] Environment-only provider credentials
+- [x] Production-like Compose stack: API / worker / PostgreSQL / Redis / MinIO
+- [x] P2 security/unit/container validation in CI
+
+### v0.2 exit criteria
+
+P2 must preserve the v0.1 offline path, perform no paid provider calls in CI, enforce tenant-scoped authorization when `ZKIDS_AUTH_SECRET` is configured, keep secrets out of persisted payloads, and preserve explicit human publish approval as a mandatory state/gate.
 
 ## v0.3 — Product control plane
 
