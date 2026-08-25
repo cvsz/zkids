@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
 
 import typer
 from pydantic import ValidationError
@@ -63,7 +63,7 @@ def qc(path: Path) -> None:
 
 
 @app.command()
-def package(path: Path, output: Path = typer.Option(..., "--output")) -> None:
+def package(path: Path, output: Annotated[Path, typer.Option("--output")]) -> None:
     """Create a validated offline production package manifest."""
     root = path.resolve()
     output = output.resolve()
