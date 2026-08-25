@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from .states import JobState, SCENE_TRANSITIONS, EpisodeState, SceneState, assert_transition
+from .states import SCENE_TRANSITIONS, EpisodeState, JobState, SceneState, assert_transition
 
 
 class RuntimeErrorZKids(RuntimeError):
