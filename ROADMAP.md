@@ -1,31 +1,44 @@
-# Roadmap
+# ROADMAP
 
-This template is intended to stay generic while providing production-grade repository foundations.
+## v0.1 — Offline-first core foundation
 
-## Foundation
+- [x] Domain state machines and fail-closed transitions
+- [x] Typed prompt compiler contracts
+- [x] Provider capability negotiation
+- [x] Asset lineage DAG
+- [x] Hard/soft QC decision policy
+- [x] Budget accounting primitive
+- [ ] Versioned JSON Schemas for series/character/episode/storyboard/scene/timeline/assets/jobs/QC/publication
+- [ ] SQLite/local durable repositories
+- [ ] Deterministic dry-run providers
+- [ ] Scene planner and timeline compiler
+- [ ] FFmpeg probe/render adapter
+- [ ] CLI: validate / plan / qc / package
+- [ ] Minimal FastAPI control plane
+- [ ] Structured audit events
+- [ ] Offline end-to-end production-package test
 
-- [x] Repository documentation baseline
-- [x] Security and contribution policies
-- [x] Issue and pull request templates
-- [x] CI and security workflow baseline
-- [x] Dependabot configuration
-- [x] Release workflow
-- [x] Docker and task-runner placeholders
-- [x] Architecture and development documentation structure
+## v0.2 — Real provider adapters
 
-## Future optional modules
+- [ ] Image provider adapter
+- [ ] Voice provider adapter
+- [ ] Motion/video provider adapter
+- [ ] S3-compatible object storage
+- [ ] PostgreSQL repository
+- [ ] Redis-compatible worker queue
 
-- [ ] Language-specific starter packs
-- [ ] Infrastructure-as-code starter packs
-- [ ] Kubernetes and Helm starter packs
-- [ ] SBOM and provenance workflows
-- [ ] Release signing and artifact attestation
-- [ ] OpenSSF Scorecard workflow
-- [ ] Container vulnerability scanning
-- [ ] Documentation site starter
-- [ ] Monorepo profile
-- [ ] Service/API profile
-- [ ] Web application profile
-- [ ] Library/SDK profile
+## v0.3 — Product control plane
 
-Generated repositories should adopt only the modules appropriate to their stack and threat model.
+- [ ] Character library and versioning UI
+- [ ] Storyboard/scene editor
+- [ ] Render monitor and retry UI
+- [ ] QC review surface
+- [ ] Human approval UI
+
+## v0.4 — Publishing and optimization
+
+- [ ] Publishing adapters behind explicit human approval
+- [ ] Analytics ingestion
+- [ ] Scene-level retention attribution
+- [ ] Multi-language episode variants
+- [ ] Experiment/creative variant model
