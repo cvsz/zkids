@@ -128,9 +128,7 @@ def create_job(
 
 
 @app.get("/v1/jobs/{job_id}")
-def get_job(
-    job_id: str, authorization: str | None = Header(default=None)
-) -> dict[str, Any]:
+def get_job(job_id: str, authorization: str | None = Header(default=None)) -> dict[str, Any]:
     principal = _require(authorization, "read")
     row = store.conn.execute(
         "SELECT job_id,payload,state,attempts FROM jobs WHERE job_id=?", (job_id,)
