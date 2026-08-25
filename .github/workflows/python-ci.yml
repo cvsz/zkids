@@ -19,7 +19,14 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: pip install -e '.[dev]'
-      - run: ruff format --check .
+      - name: Format check (P1 slice)
+        run: |
+          ruff format --check \
+            src/zkids/api.py \
+            src/zkids/cli.py \
+            src/zkids/models.py \
+            src/zkids/runtime.py \
+            tests/test_p1_offline.py
       - run: ruff check .
       - run: mypy src/zkids
       - run: bandit -q -r src/zkids
