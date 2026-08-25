@@ -69,7 +69,9 @@ def readyz() -> dict[str, Any]:
         "database_backend": "sqlite" if not os.getenv("DATABASE_URL") else "postgresql-configured",
         "queue_backend": "local" if not os.getenv("REDIS_URL") else "redis-configured",
         "object_store": "local" if not os.getenv("S3_BUCKET") else "s3-configured",
-        "publish_mode": "fake" if not os.getenv("ZKIDS_PUBLISH_ENDPOINT") else "external-configured",
+        "publish_mode": "fake"
+        if not os.getenv("ZKIDS_PUBLISH_ENDPOINT")
+        else "external-configured",
     }
 
 
@@ -154,7 +156,9 @@ def get_job(job_id: str, authorization: str | None = Header(default=None)) -> di
 @app.post("/v1/jobs/{job_id}/retry")
 def retry_job(job_id: str, authorization: str | None = Header(default=None)) -> dict[str, Any]:
     principal = _require(authorization, "execute")
-    row = store.conn.execute("SELECT payload,attempts FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+    row = store.conn.execute(
+        "SELECT payload,attempts FROM jobs WHERE job_id=?", (job_id,)
+    ).fetchone()
     if not row:
         raise HTTPException(status_code=404, detail="job not found")
     payload = dict(json.loads(row[0]))
@@ -162,7 +166,8 @@ def retry_job(job_id: str, authorization: str | None = Header(default=None)) -> 
         raise HTTPException(status_code=404, detail="job not found")
     attempts = int(row[1]) + 1
     store.conn.execute(
-        "UPDATE jobs SET state=?,attempts=? WHERE job_id=?", (JobState.RETRY.value, attempts, job_id)
+        "UPDATE jobs SET state=?,attempts=? WHERE job_id=?",
+        (JobState.RETRY.value, attempts, job_id),
     )
     store.conn.commit()
     store.audit("job.retry_requested", job_id, {"actor": principal.subject, "attempts": attempts})
@@ -313,14 +318,16 @@ def create_qc_review(
     payload: dict[str, Any], authorization: str | None = Header(default=None)
 ) -> dict[str, str]:
     principal = _require(authorization, "write")
+    notes = str(payload.get("notes", ""))
+    candidate = {k: v for k, v in payload.items() if k != "notes"}
     try:
-        result = QCResult.model_validate(payload)
+        result = QCResult.model_validate(candidate)
         return control.review_qc(
             principal.tenant_id,
             result.entity_id,
             principal.subject,
             result.decision,
-            str(payload.get("notes", "")),
+            notes,
         )
     except (ValidationError, ControlPlaneError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -343,7 +350,10 @@ def episode_retention(
 ) -> dict[str, Any]:
     principal = _require(authorization, "read")
     _episode_for(principal, episode_id)
-    return {"episode_id": episode_id, "scenes": control.scene_retention(principal.tenant_id, episode_id)}
+    return {
+        "episode_id": episode_id,
+        "scenes": control.scene_retention(principal.tenant_id, episode_id),
+    }
 
 
 @app.put("/v1/episodes/{episode_id}/variants/{variant_id}")
