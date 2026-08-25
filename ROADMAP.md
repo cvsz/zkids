@@ -8,15 +8,21 @@
 - [x] Asset lineage DAG
 - [x] Hard/soft QC decision policy
 - [x] Budget accounting primitive
-- [ ] Versioned JSON Schemas for series/character/episode/storyboard/scene/timeline/assets/jobs/QC/publication
-- [ ] SQLite/local durable repositories
-- [ ] Deterministic dry-run providers
-- [ ] Scene planner and timeline compiler
-- [ ] FFmpeg probe/render adapter
-- [ ] CLI: validate / plan / qc / package
-- [ ] Minimal FastAPI control plane
-- [ ] Structured audit events
-- [ ] Offline end-to-end production-package test
+- [x] Versioned JSON Schemas for series/character/episode/storyboard/scene/timeline/assets/jobs/QC/publication
+- [x] SQLite/local durable repositories
+- [x] Deterministic dry-run providers
+- [x] Scene planner and timeline compiler
+- [x] FFmpeg/ffprobe capability detection and safe probe path
+- [x] CLI: validate / plan / qc / package
+- [x] Minimal FastAPI control plane
+- [x] Structured immutable audit events
+- [x] Docker runtime and local compose baseline
+- [x] Python lint/type/security/test/offline-E2E CI
+- [x] Offline end-to-end production-package test path
+
+### v0.1 exit criteria
+
+`examples/episode-001` must validate, plan, pass deterministic QC, and package without external credentials or paid provider calls. Publication remains fail-closed until explicit human approval.
 
 ## v0.2 — Real provider adapters
 
@@ -26,6 +32,8 @@
 - [ ] S3-compatible object storage
 - [ ] PostgreSQL repository
 - [ ] Redis-compatible worker queue
+- [ ] Authentication/RBAC and tenant boundaries
+- [ ] Provider-specific cost metering and production retry telemetry
 
 ## v0.3 — Product control plane
 

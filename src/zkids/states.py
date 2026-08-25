@@ -1,7 +1,9 @@
 """Canonical domain state machines for zkids."""
+
 from __future__ import annotations
 
 from enum import StrEnum
+from typing import TypeVar
 
 
 class TransitionError(ValueError):
@@ -47,7 +49,10 @@ EPISODE_TRANSITIONS: dict[EpisodeState, set[EpisodeState]] = {
     EpisodeState.DRAFT: {EpisodeState.STORY_APPROVED, EpisodeState.REJECTED},
     EpisodeState.STORY_APPROVED: {EpisodeState.PRODUCTION, EpisodeState.REJECTED},
     EpisodeState.PRODUCTION: {EpisodeState.FINAL_QC_APPROVED, EpisodeState.REJECTED},
-    EpisodeState.FINAL_QC_APPROVED: {EpisodeState.HUMAN_PUBLISH_APPROVED, EpisodeState.REJECTED},
+    EpisodeState.FINAL_QC_APPROVED: {
+        EpisodeState.HUMAN_PUBLISH_APPROVED,
+        EpisodeState.REJECTED,
+    },
     EpisodeState.HUMAN_PUBLISH_APPROVED: {EpisodeState.PUBLISHED, EpisodeState.REJECTED},
     EpisodeState.PUBLISHED: set(),
     EpisodeState.REJECTED: set(),
@@ -58,17 +63,36 @@ SCENE_TRANSITIONS: dict[SceneState, set[SceneState]] = {
     SceneState.SCRIPT_READY: {SceneState.STILL_PENDING, SceneState.FAILED},
     SceneState.STILL_PENDING: {SceneState.STILL_GENERATING, SceneState.FAILED},
     SceneState.STILL_GENERATING: {SceneState.STILL_QC, SceneState.FAILED},
-    SceneState.STILL_QC: {SceneState.VIDEO_PENDING, SceneState.STILL_PENDING, SceneState.MANUAL_REVIEW},
+    SceneState.STILL_QC: {
+        SceneState.VIDEO_PENDING,
+        SceneState.STILL_PENDING,
+        SceneState.MANUAL_REVIEW,
+    },
     SceneState.VIDEO_PENDING: {SceneState.VIDEO_GENERATING, SceneState.FAILED},
     SceneState.VIDEO_GENERATING: {SceneState.VIDEO_QC, SceneState.FAILED},
-    SceneState.VIDEO_QC: {SceneState.TIMELINE_READY, SceneState.VIDEO_PENDING, SceneState.MANUAL_REVIEW},
+    SceneState.VIDEO_QC: {
+        SceneState.TIMELINE_READY,
+        SceneState.VIDEO_PENDING,
+        SceneState.MANUAL_REVIEW,
+    },
     SceneState.TIMELINE_READY: {SceneState.APPROVED, SceneState.MANUAL_REVIEW},
     SceneState.APPROVED: set(),
-    SceneState.MANUAL_REVIEW: {SceneState.STILL_PENDING, SceneState.VIDEO_PENDING, SceneState.FAILED},
+    SceneState.MANUAL_REVIEW: {
+        SceneState.STILL_PENDING,
+        SceneState.VIDEO_PENDING,
+        SceneState.FAILED,
+    },
     SceneState.FAILED: set(),
 }
 
 
-def assert_transition(current: StrEnum, target: StrEnum, table: dict[StrEnum, set[StrEnum]]) -> None:
+StateT = TypeVar("StateT", bound=StrEnum)
+
+
+def assert_transition(
+    current: StateT,
+    target: StateT,
+    table: dict[StateT, set[StateT]],
+) -> None:
     if target not in table.get(current, set()):
         raise TransitionError(f"illegal transition: {current} -> {target}")
