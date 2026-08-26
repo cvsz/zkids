@@ -1,0 +1,258 @@
+{
+  "$defs": {
+    "CameraSpec": {
+      "properties": {
+        "shot": {
+          "default": "medium",
+          "title": "Shot",
+          "type": "string"
+        },
+        "movement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Movement"
+        }
+      },
+      "title": "CameraSpec",
+      "type": "object"
+    },
+    "Dialogue": {
+      "properties": {
+        "speaker": {
+          "title": "Speaker",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direction"
+        }
+      },
+      "required": [
+        "speaker",
+        "text"
+      ],
+      "title": "Dialogue",
+      "type": "object"
+    },
+    "SFXCue": {
+      "properties": {
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "number"
+        }
+      },
+      "required": [
+        "file",
+        "timestamp"
+      ],
+      "title": "SFXCue",
+      "type": "object"
+    },
+    "ScriptScene": {
+      "properties": {
+        "scene_id": {
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "segment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Segment"
+        },
+        "duration_target": {
+          "default": 8.0,
+          "title": "Duration Target",
+          "type": "number"
+        },
+        "characters": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "dialogue": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Dialogue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "narration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Narration"
+        },
+        "action": {
+          "default": "",
+          "title": "Action",
+          "type": "string"
+        },
+        "camera": {
+          "$ref": "#/$defs/CameraSpec"
+        },
+        "learning_point": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Learning Point"
+        },
+        "sfx_cues": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/SFXCue"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sfx Cues"
+        }
+      },
+      "required": [
+        "scene_id"
+      ],
+      "title": "ScriptScene",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "episode_id": {
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "series_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Series Id"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "topic": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Topic"
+    },
+    "learning_goal": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Learning Goal"
+    },
+    "hook": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hook"
+    },
+    "scenes": {
+      "items": {
+        "$ref": "#/$defs/ScriptScene"
+      },
+      "title": "Scenes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "episode_id",
+    "title"
+  ],
+  "title": "EpisodeScript",
+  "type": "object"
+}

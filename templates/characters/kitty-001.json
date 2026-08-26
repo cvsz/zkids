@@ -1,0 +1,31 @@
+{
+  "character_id": "kitty-001",
+  "name": "Kitty",
+  "species": "cat",
+  "age_appearance": "childlike",
+  "look": {
+    "body": [
+      "short body"
+    ],
+    "face": [
+      "round face"
+    ],
+    "fur": [
+      "orange"
+    ],
+    "clothing": [
+      "red scarf"
+    ]
+  },
+  "personality": [
+    "curious"
+  ],
+  "signature_actions": [],
+  "never_change": [
+    "fur color"
+  ],
+  "version": 1,
+  "voice": null,
+  "reference_images": {},
+  "palette_hex": []
+}

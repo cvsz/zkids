@@ -1,0 +1,194 @@
+{
+  "$defs": {
+    "CharacterLook": {
+      "properties": {
+        "body": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Body",
+          "type": "array"
+        },
+        "face": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Face",
+          "type": "array"
+        },
+        "fur": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fur",
+          "type": "array"
+        },
+        "clothing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Clothing",
+          "type": "array"
+        }
+      },
+      "title": "CharacterLook",
+      "type": "object"
+    },
+    "VoiceDelivery": {
+      "properties": {
+        "energy": {
+          "default": "cheerful",
+          "title": "Energy",
+          "type": "string"
+        },
+        "pace": {
+          "default": "medium-slow",
+          "title": "Pace",
+          "type": "string"
+        },
+        "articulation": {
+          "default": "clear",
+          "title": "Articulation",
+          "type": "string"
+        },
+        "emotion": {
+          "default": "friendly",
+          "title": "Emotion",
+          "type": "string"
+        }
+      },
+      "title": "VoiceDelivery",
+      "type": "object"
+    },
+    "VoiceProfile": {
+      "properties": {
+        "voice_id": {
+          "title": "Voice Id",
+          "type": "string"
+        },
+        "language": {
+          "default": "en",
+          "title": "Language",
+          "type": "string"
+        },
+        "gender": {
+          "default": "neutral",
+          "title": "Gender",
+          "type": "string"
+        },
+        "delivery": {
+          "$ref": "#/$defs/VoiceDelivery"
+        },
+        "rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rules",
+          "type": "array"
+        },
+        "provider_voice_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Voice Name"
+        },
+        "cloning_consent": {
+          "default": false,
+          "title": "Cloning Consent",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "voice_id"
+      ],
+      "title": "VoiceProfile",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "character_id": {
+      "title": "Character Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "species": {
+      "title": "Species",
+      "type": "string"
+    },
+    "age_appearance": {
+      "title": "Age Appearance",
+      "type": "string"
+    },
+    "look": {
+      "$ref": "#/$defs/CharacterLook"
+    },
+    "personality": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Personality",
+      "type": "array"
+    },
+    "signature_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Signature Actions",
+      "type": "array"
+    },
+    "never_change": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Never Change",
+      "type": "array"
+    },
+    "version": {
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "voice": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VoiceProfile"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "reference_images": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Reference Images",
+      "type": "object"
+    },
+    "palette_hex": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Palette Hex",
+      "type": "array"
+    }
+  },
+  "required": [
+    "character_id",
+    "name",
+    "species",
+    "age_appearance"
+  ],
+  "title": "CharacterSpec",
+  "type": "object"
+}

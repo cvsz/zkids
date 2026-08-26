@@ -18,6 +18,7 @@ Regenerate and commit whenever a model changes.
 | `schemas/timeline.schema.json` | `EpisodeTimeline` | video/voice/music/sfx/subtitle tracks with computed timestamps |
 | `schemas/provenance.schema.json` | `AssetProvenance` | generator, model, seed, prompt, approvals per asset |
 | `schemas/generation-job.schema.json` | `GenerationJob` | queue record incl. idempotency key + attempts |
+| `schemas/live-character-prompt.schema.json` | `LiveCharacterPrompt` | real-time interactive avatar prompt: identity locks, live state machine, latency/streaming targets, voice prosody, response contract, memory + safety policy (instance: `templates/characters/NEKO-001-LIVE.json`) |
 
 Rules of engagement:
 

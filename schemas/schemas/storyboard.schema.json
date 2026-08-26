@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "CameraSpec": {
+      "properties": {
+        "shot": {
+          "default": "medium",
+          "title": "Shot",
+          "type": "string"
+        },
+        "movement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Movement"
+        }
+      },
+      "title": "CameraSpec",
+      "type": "object"
+    },
+    "ShotSpec": {
+      "properties": {
+        "shot_id": {
+          "title": "Shot Id",
+          "type": "string"
+        },
+        "scene_id": {
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/ShotType",
+          "default": "hero"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "camera": {
+          "$ref": "#/$defs/CameraSpec"
+        },
+        "duration_target": {
+          "default": 8.0,
+          "title": "Duration Target",
+          "type": "number"
+        },
+        "characters": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Characters",
+          "type": "array"
+        },
+        "reusable": {
+          "default": false,
+          "title": "Reusable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "shot_id",
+        "scene_id"
+      ],
+      "title": "ShotSpec",
+      "type": "object"
+    },
+    "ShotType": {
+      "enum": [
+        "hero",
+        "reaction",
+        "environment",
+        "closeup",
+        "transition",
+        "graphics"
+      ],
+      "title": "ShotType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "episode_id": {
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "shots": {
+      "items": {
+        "$ref": "#/$defs/ShotSpec"
+      },
+      "title": "Shots",
+      "type": "array"
+    }
+  },
+  "required": [
+    "episode_id"
+  ],
+  "title": "Storyboard",
+  "type": "object"
+}

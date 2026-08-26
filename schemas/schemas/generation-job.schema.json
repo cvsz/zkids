@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "JobKind": {
+      "enum": [
+        "STORY",
+        "VOICE",
+        "STILL",
+        "VIDEO",
+        "MUSIC",
+        "SFX",
+        "RENDER"
+      ],
+      "title": "JobKind",
+      "type": "string"
+    },
+    "JobState": {
+      "enum": [
+        "PENDING",
+        "GENERATING",
+        "VALIDATING",
+        "RETRY",
+        "APPROVED",
+        "FAILED",
+        "MANUAL_REVIEW"
+      ],
+      "title": "JobState",
+      "type": "string"
+    },
+    "QualityTier": {
+      "enum": [
+        "draft",
+        "production"
+      ],
+      "title": "QualityTier",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "job_id": {
+      "title": "Job Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/JobKind"
+    },
+    "scene_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Scene Id"
+    },
+    "episode_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Episode Id"
+    },
+    "state": {
+      "$ref": "#/$defs/JobState",
+      "default": "PENDING"
+    },
+    "attempts": {
+      "default": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "max_retries": {
+      "default": 3,
+      "title": "Max Retries",
+      "type": "integer"
+    },
+    "quality_tier": {
+      "$ref": "#/$defs/QualityTier",
+      "default": "draft"
+    },
+    "provider": {
+      "default": "placeholder",
+      "title": "Provider",
+      "type": "string"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model"
+    },
+    "payload_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Payload Hash"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error"
+    },
+    "artifacts": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "cost_estimate_usd": {
+      "default": 0.0,
+      "title": "Cost Estimate Usd",
+      "type": "number"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "job_id",
+    "kind"
+  ],
+  "title": "GenerationJob",
+  "type": "object"
+}

@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "VisualStyle": {
+      "properties": {
+        "type": {
+          "default": "soft 3D children's animation",
+          "title": "Type",
+          "type": "string"
+        },
+        "lighting": {
+          "default": "warm soft",
+          "title": "Lighting",
+          "type": "string"
+        },
+        "palette": {
+          "default": "bright pastel",
+          "title": "Palette",
+          "type": "string"
+        }
+      },
+      "title": "VisualStyle",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "series_id": {
+      "title": "Series Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "audience": {
+      "default": "4-7",
+      "title": "Audience",
+      "type": "string"
+    },
+    "genre": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Genre",
+      "type": "array"
+    },
+    "episode_duration_target_sec": {
+      "default": 240,
+      "title": "Episode Duration Target Sec",
+      "type": "integer"
+    },
+    "learning_topics": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Learning Topics",
+      "type": "array"
+    },
+    "visual_style": {
+      "$ref": "#/$defs/VisualStyle"
+    },
+    "music_style": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Music Style"
+    },
+    "logline": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Logline"
+    }
+  },
+  "required": [
+    "series_id",
+    "name"
+  ],
+  "title": "SeriesBible",
+  "type": "object"
+}

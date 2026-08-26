@@ -8,6 +8,7 @@ from .models import (
     EpisodeScript,
     EpisodeTimeline,
     GenerationJob,
+    LiveCharacterPrompt,
     SceneManifest,
     SeriesBible,
     Storyboard,
@@ -22,6 +23,7 @@ SCHEMA_TARGETS = {
     "timeline.schema.json": EpisodeTimeline,
     "provenance.schema.json": AssetProvenance,
     "generation-job.schema.json": GenerationJob,
+    "live-character-prompt.schema.json": LiveCharacterPrompt,
 }
 
 

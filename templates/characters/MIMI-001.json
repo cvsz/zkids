@@ -1,0 +1,43 @@
+{
+  "character_id": "MIMI-001",
+  "name": "Mimi",
+  "species": "rabbit",
+  "age_appearance": "small childlike, about 6 years old",
+  "look": {
+    "body": ["short body", "large rounded head", "short arms", "short legs"],
+    "face": ["round face", "large dark-brown eyes", "tiny pink triangular nose", "soft cheeks"],
+    "fur": ["white fur", "light pink inner ears"],
+    "clothing": ["yellow short-sleeve shirt", "blue overalls", "white shoes"]
+  },
+  "personality": ["curious", "friendly", "energetic", "empathetic"],
+  "signature_actions": [
+    "tilts head when curious",
+    "small jump when excited",
+    "ears move when surprised"
+  ],
+  "never_change": [
+    "eye color",
+    "fur color",
+    "clothing palette",
+    "ear proportions",
+    "body proportions",
+    "facial proportions"
+  ],
+  "version": 1,
+  "voice": {
+    "voice_id": "MIMI_VOICE_001",
+    "language": "en",
+    "gender": "child-neutral",
+    "delivery": {
+      "energy": "cheerful",
+      "pace": "medium-slow",
+      "articulation": "clear",
+      "emotion": "friendly"
+    },
+    "rules": ["avoid shouting", "clear pronunciation", "short sentences"],
+    "provider_voice_name": null,
+    "cloning_consent": false
+  },
+  "reference_images": {},
+  "palette_hex": ["#FFFFFF", "#F9C6D0", "#4A7BD0", "#FFD95E", "#5C3A21"]
+}

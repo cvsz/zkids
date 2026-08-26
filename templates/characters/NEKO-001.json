@@ -1,0 +1,74 @@
+{
+  "character_id": "NEKO-001",
+  "name": "Neko",
+  "species": "cat",
+  "age_appearance": "childlike",
+  "look": {
+    "body": [
+      "short body",
+      "compact rounded proportions",
+      "soft friendly silhouette"
+    ],
+    "face": [
+      "round face",
+      "large expressive eyes",
+      "small cat nose",
+      "soft rounded cheeks"
+    ],
+    "fur": [
+      "orange",
+      "short soft fur",
+      "natural subtle fur texture"
+    ],
+    "clothing": [
+      "red scarf",
+      "simple clean design",
+      "comfortable everyday appearance"
+    ]
+  },
+  "personality": [
+    "curious",
+    "warm",
+    "playful",
+    "gentle",
+    "observant",
+    "empathetic",
+    "optimistic"
+  ],
+  "signature_actions": [
+    "slow blink when relaxed",
+    "head tilt when curious",
+    "ear twitch when listening",
+    "tail swish when excited",
+    "small paw wave when greeting",
+    "soft purr when comfortable"
+  ],
+  "never_change": [
+    "fur color",
+    "eye shape",
+    "face proportions",
+    "body proportions",
+    "scarf color"
+  ],
+  "version": 2,
+  "voice": {
+    "voice_id": "NEKO_VOICE_001",
+    "language": "th-TH",
+    "gender": "child-neutral",
+    "delivery": {
+      "energy": "warm",
+      "pace": "medium",
+      "articulation": "clear",
+      "emotion": "friendly"
+    },
+    "rules": [
+      "warm, bright, friendly, concise, natural",
+      "light and expressive, never imitate an identifiable person",
+      "clear pronunciation for live audio"
+    ],
+    "provider_voice_name": null,
+    "cloning_consent": false
+  },
+  "reference_images": {},
+  "palette_hex": ["#FF8C42", "#FFB07C", "#FFE5B4", "#E63946", "#FFF8E7"]
+}

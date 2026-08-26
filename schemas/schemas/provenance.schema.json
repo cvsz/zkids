@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "AssetKind": {
+      "enum": [
+        "script",
+        "storyboard",
+        "manifest",
+        "timeline",
+        "character_ref",
+        "still",
+        "video",
+        "voice",
+        "music",
+        "sfx",
+        "subtitle",
+        "master"
+      ],
+      "title": "AssetKind",
+      "type": "string"
+    },
+    "GeneratorInfo": {
+      "properties": {
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "attempt": {
+          "default": 1,
+          "title": "Attempt",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "provider"
+      ],
+      "title": "GeneratorInfo",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "scene_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Scene Id"
+    },
+    "episode_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Episode Id"
+    },
+    "kind": {
+      "$ref": "#/$defs/AssetKind"
+    },
+    "path": {
+      "title": "Path",
+      "type": "string"
+    },
+    "generator": {
+      "$ref": "#/$defs/GeneratorInfo"
+    },
+    "prompt_version": {
+      "default": "1.0",
+      "title": "Prompt Version",
+      "type": "string"
+    },
+    "character_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Character Version"
+    },
+    "prompt_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Prompt Text"
+    },
+    "reference_images": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reference Images",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "approved": {
+      "default": false,
+      "title": "Approved",
+      "type": "boolean"
+    },
+    "cost_estimate_usd": {
+      "default": 0.0,
+      "title": "Cost Estimate Usd",
+      "type": "number"
+    }
+  },
+  "required": [
+    "asset_id",
+    "kind",
+    "path",
+    "generator"
+  ],
+  "title": "AssetProvenance",
+  "type": "object"
+}

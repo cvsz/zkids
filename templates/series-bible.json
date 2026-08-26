@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "series_id": "mimis-little-world",
+  "name": "Mimi's Little World",
+  "audience": "4-7",
+  "genre": [
+    "educational",
+    "adventure",
+    "comedy"
+  ],
+  "episode_duration_target_sec": 240,
+  "learning_topics": [
+    "colors",
+    "numbers",
+    "animals",
+    "friendship",
+    "emotions"
+  ],
+  "visual_style": {
+    "type": "soft 3D children's animation",
+    "lighting": "warm soft",
+    "palette": "bright pastel"
+  },
+  "music_style": "gentle playful orchestral",
+  "logline": "Mimi, a curious little rabbit, discovers something wonderful about the world in every episode."
+}

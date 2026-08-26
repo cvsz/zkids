@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "episode": {
+      "title": "Episode",
+      "type": "string"
+    },
+    "fps": {
+      "default": 30,
+      "title": "Fps",
+      "type": "integer"
+    },
+    "width": {
+      "default": 1920,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "default": 1080,
+      "title": "Height",
+      "type": "integer"
+    },
+    "tracks": {
+      "additionalProperties": {
+        "items": {},
+        "type": "array"
+      },
+      "title": "Tracks",
+      "type": "object"
+    }
+  },
+  "required": [
+    "episode"
+  ],
+  "title": "EpisodeTimeline",
+  "type": "object"
+}
