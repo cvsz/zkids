@@ -1,0 +1,50 @@
+{
+	servers {
+		trusted_proxies cloudflare
+	}
+	log {
+		output file /var/log/caddy/access.log
+		format json
+	}
+}
+
+(secure) {
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		X-XSS-Protection "0"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self' blob: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.meta.ai https://integrate.api.nvidia.com https://openrouter.ai"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		-Server
+	}
+	encode zstd gzip
+}
+
+zkids.zeaz.dev, www.zkids.zeaz.dev {
+	import secure
+	@api path /api/* /metrics /health* /ready /openapi.json
+	handle @api {
+		reverse_proxy api:8010 {
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Request-Id {http.request.uuid}
+		}
+	}
+	handle {
+		reverse_proxy api:8010
+	}
+	log {
+		output file /var/log/caddy/zkids.log
+	}
+}
+
+# Internal metrics only
+:9090 {
+	@metrics path /metrics
+	handle @metrics {
+		reverse_proxy api:8010
+	}
+	respond /health 200
+}

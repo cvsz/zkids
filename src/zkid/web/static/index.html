@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>zkids — Factory OS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;500;600;700&family=Geist+Mono&display=swap">
+<style>
+@import "tw-animate-css";
+:root{
+  --radius:0.625rem;
+  --background:oklch(1 0 0);--foreground:oklch(0.145 0 0);
+  --card:oklch(1 0 0);--card-foreground:oklch(0.145 0 0);
+  --popover:oklch(1 0 0);--popover-foreground:oklch(0.145 0 0);
+  --primary:oklch(0.205 0 0);--primary-foreground:oklch(0.985 0 0);
+  --secondary:oklch(0.97 0 0);--secondary-foreground:oklch(0.205 0 0);
+  --muted:oklch(0.97 0 0);--muted-foreground:oklch(0.556 0 0);
+  --accent:oklch(0.97 0 0);--accent-foreground:oklch(0.205 0 0);
+  --destructive:oklch(0.577 0.245 27.325);--border:oklch(0.922 0 0);--input:oklch(0.922 0 0);--ring:oklch(0.708 0 0);
+  --chart-1:oklch(0.646 0.222 41.116);--chart-2:oklch(0.6 0.118 184.704);--chart-3:oklch(0.398 0.07 227.392);--chart-4:oklch(0.828 0.189 84.429);--chart-5:oklch(0.769 0.188 70.08);
+  --sidebar:oklch(0.985 0 0);--sidebar-foreground:oklch(0.145 0 0);--sidebar-primary:oklch(0.205 0 0);--sidebar-primary-foreground:oklch(0.985 0 0);--sidebar-accent:oklch(0.97 0 0);--sidebar-accent-foreground:oklch(0.205 0 0);--sidebar-border:oklch(0.922 0 0);--sidebar-ring:oklch(0.708 0 0);
+  --bg:var(--background);--panel:var(--card);--panel2:var(--accent);--edge:var(--border);--ink:var(--foreground);--dim:var(--muted-foreground);--acc:var(--primary);--acc2:oklch(0.6 0.118 184.704);--warn:oklch(0.828 0.189 84.429);--bad:var(--destructive);--ok:oklch(0.6 0.118 184.704);
+  --font-sans: "Geist Sans", Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}
+.dark{
+  --background:oklch(0.145 0 0);--foreground:oklch(0.985 0 0);
+  --card:oklch(0.205 0 0);--card-foreground:oklch(0.985 0 0);
+  --popover:oklch(0.205 0 0);--popover-foreground:oklch(0.985 0 0);
+  --primary:oklch(0.922 0 0);--primary-foreground:oklch(0.205 0 0);
+  --secondary:oklch(0.269 0 0);--secondary-foreground:oklch(0.985 0 0);
+  --muted:oklch(0.269 0 0);--muted-foreground:oklch(0.708 0 0);
+  --accent:oklch(0.269 0 0);--accent-foreground:oklch(0.985 0 0);
+  --destructive:oklch(0.704 0.191 22.216);--border:oklch(1 0 0 / 10%);--input:oklch(1 0 0 / 15%);--ring:oklch(0.556 0 0);
+  --chart-1:oklch(0.488 0.243 264.376);--chart-2:oklch(0.696 0.17 162.48);--chart-3:oklch(0.769 0.188 70.08);--chart-4:oklch(0.627 0.265 303.9);--chart-5:oklch(0.645 0.246 16.439);
+  --sidebar:oklch(0.205 0 0);--sidebar-foreground:oklch(0.985 0 0);--sidebar-primary:oklch(0.488 0.243 264.376);--sidebar-primary-foreground:oklch(0.985 0 0);--sidebar-accent:oklch(0.269 0 0);--sidebar-accent-foreground:oklch(0.985 0 0);--sidebar-border:oklch(1 0 0 / 10%);--sidebar-ring:oklch(0.556 0 0);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+*{border-color:var(--border)}
+body{background:var(--background);color:var(--foreground);font:13px/1.5 var(--font-sans);display:flex;min-height:100vh}
+a{color:var(--acc);text-decoration:none}
+nav{width:220px;background:var(--sidebar);color:var(--sidebar-foreground);border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+nav .brand{padding:18px 16px 14px;border-bottom:1px solid var(--sidebar-border);display:flex;align-items:center;gap:10px}
+nav .brand b{font-size:16px;letter-spacing:.03em}
+nav .brand small{color:var(--muted-foreground);font-size:11px}
+nav ul{list-style:none;padding:10px 8px;flex:1;overflow:auto}
+nav li{padding:9px 10px;border-radius:calc(var(--radius) - 2px);cursor:pointer;display:flex;align-items:center;gap:9px;color:var(--muted-foreground);font-weight:600;font-size:12px}
+nav li:hover{background:var(--sidebar-accent);color:var(--sidebar-accent-foreground)}
+nav li.on{background:var(--sidebar-primary);color:var(--sidebar-primary-foreground);border:1px solid var(--sidebar-ring)}
+nav li .ico{width:18px;text-align:center}
+nav .foot{padding:12px;border-top:1px solid var(--edge);font-size:11px;color:var(--dim)}
+main{flex:1;min-width:0;padding:18px 20px;max-width:1400px}
+header.top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+header.top h1{font-size:18px;font-weight:800}
+.badge{font-size:11px;padding:3px 9px;border-radius:99px;background:var(--muted);color:var(--dim);border:1px solid var(--edge)}
+.badge.ok{color:var(--ok);border-color:rgba(93,211,158,.3)}
+.pill{font-size:11px;padding:2px 8px;border-radius:99px;background:#242a45;color:var(--dim);white-space:nowrap;border:1px solid transparent}
+.pill.good{background:rgba(93,211,158,.14);color:var(--ok);border-color:rgba(93,211,158,.2)}
+.pill.bad{background:rgba(255,107,129,.14);color:var(--bad);border-color:rgba(255,107,129,.2)}
+.pill.warn{background:rgba(255,180,84,.14);color:var(--warn)}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h2 .count{font-size:11px;background:var(--muted);padding:1px 7px;border-radius:99px;color:var(--dim)}
+.kv{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;color:var(--dim)}
+.kv b{color:var(--ink);font-weight:600}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi .card{margin:0;text-align:center}
+.kpi .val{font-size:22px;font-weight:800;color:var(--ink)}
+.kpi .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr} nav{width:64px} nav li span.txt, nav .brand small, nav .brand b span{display:none} }
+input[type=text],input[type=number],textarea,select{width:100%;background:#0d1020;border:1px solid var(--edge);border-radius:8px;color:var(--ink);padding:8px 10px;font-size:13px}
+textarea{resize:vertical;min-height:70px}
+label{font-size:11px;color:var(--dim);display:block;margin:7px 0 3px;text-transform:uppercase;letter-spacing:.07em}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.btn{background:var(--acc);border:0;color:#070b1e;font-weight:700;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1px solid var(--edge);color:var(--ink)}
+.btn.ok{background:var(--acc2);color:#062016}
+.btn.bad{background:var(--bad);color:#2a0a0e}
+.btn.sm{padding:5px 10px;font-size:11px}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:8px;border:1px solid var(--edge);background:#12152a;color:var(--dim);cursor:pointer;font-size:11px;font-weight:700}
+.tab.on{background:var(--acc);color:#070b1e;border-color:var(--acc)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--dim);text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:7px 6px;border-bottom:1px solid var(--edge)}
+td{padding:7px 6px;border-top:1px solid rgba(255,255,255,.06);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+.bars{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.bar{font-size:10px;padding:3px 7px;border-radius:6px;background:#232946;color:var(--dim);font-weight:700}
+.bar.APPROVED{background:rgba(93,211,158,.14);color:var(--ok)}
+.bar.GENERATING,.bar.VALIDATING,.bar.PENDING,.bar.RETRY{background:rgba(255,180,84,.14);color:var(--warn)}
+.bar.MANUAL_REVIEW,.bar.FAILED{background:rgba(255,107,129,.14);color:var(--bad)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.gallery figure{margin:0;background:#0d1020;border:1px solid var(--edge);border-radius:10px;overflow:hidden;cursor:pointer}
+.gallery img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#000}
+.gallery figcaption{padding:6px 8px;font-size:11px;color:var(--dim)}
+.gallery figcaption b{color:var(--ink)}
+.track{position:relative;height:26px;background:rgba(255,255,255,.04);border-radius:7px;margin:6px 0;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.track label{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);z-index:1;margin:0}
+.clip{position:absolute;top:2px;bottom:2px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#070b1e;overflow:hidden;white-space:nowrap;padding:0 6px}
+.clip.video{background:#7aa2ff}.clip.voice{background:#5dd39e}.clip.music{background:#c3a6ff}.clip.sfx{background:#ffb454}
+video.main{width:100%;border-radius:10px;background:#000}
+pre{background:#0d1020;border:1px solid var(--edge);border-radius:8px;padding:10px;font-size:11px;overflow:auto;max-height:260px;white-space:pre-wrap;color:#aab3cf}
+.muted{color:var(--dim);font-size:12px}
+.lightbox{position:fixed;inset:0;background:rgba(4,6,16,.88);display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
+.lightbox.on{display:flex}
+.lightbox img{max-width:min(1100px,94vw);max-height:84vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.lightbox .meta{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);background:rgba(10,12,26,.95);border:1px solid var(--edge);padding:8px 12px;border-radius:10px;font-size:11px;color:var(--dim);max-width:90vw;text-align:center}
+.chip{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--muted);border:1px solid var(--edge);color:var(--dim)}
+.search{position:relative}
+.search input{padding-left:30px}
+.search i{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:13px}
+.spark{width:100%;height:36px;display:block}
+.page{display:none}.page.on{display:block}
+.gate{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;border:1px solid transparent}
+.gate:hover{background:rgba(255,255,255,.03)}
+.dot{width:9px;height:9px;border-radius:50%;background:#3a4166;flex:none}
+.dot.ok{background:var(--ok);box-shadow:0 0 8px rgba(93,211,158,.45)}.dot.bad{background:var(--bad)}.dot.open{background:#3a4166}
+hr.sep{border:0;border-top:1px solid var(--edge);margin:10px 0}
+.modal{position:fixed;inset:0;background:rgba(4,6,16,.6);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand"><span style="font-size:20px">🎬</span><div><b>zkids<span style="color:var(--acc)">.OS</span></b><br><small>Factory OS · zeaz.dev</small></div></div>
+  <ul id="nav">
+    <li data-page="dashboard" class="on"><span class="ico">◧</span><span class="txt">Dashboard</span></li>
+    <li data-page="episodes"><span class="ico">🎞</span><span class="txt">Episodes</span></li>
+    <li data-page="characters"><span class="ico">🐰</span><span class="txt">Series & Cast</span></li>
+    <li data-page="assets"><span class="ico">🗂</span><span class="txt">Asset Library</span></li>
+    <li data-page="queue"><span class="ico">⚡</span><span class="txt">Queue</span></li>
+    <li data-page="analytics"><span class="ico">📈</span><span class="txt">Analytics</span></li>
+    <li data-page="settings"><span class="ico">⚙</span><span class="txt">Settings</span></li>
+  </ul>
+  <div class="foot">
+    <div id="healthBadge" class="badge">checking…</div>
+    <div style="margin-top:8px"><span class="muted">Factory root</span><br><small>/home/cvsz/zkid</small></div>
+  </div>
+</nav>
+
+<main>
+  <header class="top">
+    <h1 id="pageTitle">Dashboard</h1>
+    <span class="badge" id="epBadge" style="display:none"></span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <input type="text" id="globalSearch" placeholder="Search episodes, assets…" style="width:220px">
+      <input type="text" id="token" placeholder="Operator token" style="width:170px">
+      <button class="btn ghost sm" id="themeToggle" title="Toggle theme" onclick="toggleTheme()" style="padding:6px 10px">◐</button>
+      <span class="pill" id="versionPill">zkid 0.1</span>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <section id="page-dashboard" class="page on">
+    <div class="kpi" id="kpiRow"></div>
+    <div class="grid2">
+      <div class="card">
+        <h2>New episode</h2>
+        <label>Topic</label><input type="text" id="topic" placeholder="Mimi finds a red apple">
+        <label>Episode ID (optional)</label><input type="text" id="ep" placeholder="EP042">
+        <div class="row"><label style="margin:0;display:flex;gap:7px;align-items:center;text-transform:none;letter-spacing:0"><input type="checkbox" id="draft" checked> draft (offline, free)</label></div>
+        <div class="row"><label style="margin:0;display:flex;gap:7px;align-items:center;text-transform:none;letter-spacing:0"><input type="checkbox" id="approve"> publish override (GATE 5)</label></div>
+        <button class="btn" id="produce" style="width:100%;margin-top:8px">Produce episode</button>
+        <p class="muted" id="produceMsg" style="margin-top:7px;min-height:16px"></p>
+        <pre id="taskLog" style="display:none"></pre>
+      </div>
+      <div class="card">
+        <h2>Gate health across episodes</h2><div id="gateHealth"></div>
+        <hr class="sep"><h2>Recent episodes</h2><ul id="dashEps" style="list-style:none"></ul>
+      </div>
+    </div>
+    <div class="card"><h2>Budget burn</h2><canvas id="budgetSpark" class="spark"></canvas><div id="budgetLegend" class="muted"></div></div>
+    <div class="card"><h2>Recent runs</h2><ul id="tasks" style="list-style:none"></ul></div>
+  </section>
+
+  <!-- EPISODES -->
+  <section id="page-episodes" class="page">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>Episodes <span class="count pill" id="epsCount"></span></h2>
+        <div class="row">
+          <select id="filterState"><option value="">All states</option><option>master-ready</option><option>scripted</option><option>failed</option></select>
+          <select id="sortBy"><option value="created">Newest</option><option value="title">Title</option><option value="jobs">Jobs</option></select>
+          <button class="btn ghost sm" onclick="loadEpisodes()">Refresh</button>
+        </div>
+      </div>
+      <div id="episodesTable"></div>
+    </div>
+    <div id="episodeDetailWrap"></div>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="page-characters" class="page">
+    <div class="card" id="seriesCard"><h2>Series Bible</h2><div id="seriesView"></div></div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2>Cast <span class="count pill" id="castCount"></span></h2><button class="btn sm" onclick="openCharModal()">+ New character</button></div>
+      <div id="castGrid" class="gallery"></div>
+    </div>
+  </section>
+
+  <!-- ASSETS -->
+  <section id="page-assets" class="page">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;flex-wrap:wrap">
+        <h2>Asset Library <span class="count pill" id="assetsCount"></span></h2>
+        <div class="row">
+          <select id="assetKind"><option value="">All kinds</option><option value="still">still</option><option value="video">video</option><option value="voice">voice</option><option value="music">music</option><option value="sfx">sfx</option></select>
+          <select id="assetProvider"><option value="">All providers</option><option value="procedural_cartoon">procedural_cartoon</option><option value="placeholder">placeholder</option><option value="google">google</option></select>
+          <input type="text" id="assetSearch" placeholder="Search asset/scene/ep…" style="width:180px">
+          <button class="btn ghost sm" onclick="loadAssets()">Apply</button>
+        </div>
+      </div>
+      <div id="assetsGrid" class="gallery" style="margin-top:8px"></div>
+      <div class="row" style="justify-content:center;margin-top:10px"><button class="btn ghost sm" id="assetsMore" onclick="loadAssets(true)">Load more</button></div>
+    </div>
+  </section>
+
+  <!-- QUEUE -->
+  <section id="page-queue" class="page">
+    <div class="kpi" id="queueKpi"></div>
+    <div class="card"><h2>Render queue (live)</h2><div id="queueTable"></div><p class="muted" style="margin-top:6px">Transitions constrained by <code>ALLOWED_TRANSITIONS</code> · exhaust → <code>MANUAL_REVIEW</code></p></div>
+    <div class="card"><h2>Manual review queue</h2><div id="reviewQueue"></div></div>
+    <div class="card"><h2>Budget gauges</h2><div id="budgetGauges" class="grid2"></div></div>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section id="page-analytics" class="page">
+    <div class="kpi" id="analyticsKpi"></div>
+    <div class="grid2">
+      <div class="card"><h2>Cost per episode</h2><canvas id="costChart" class="spark" style="height:120px"></canvas></div>
+      <div class="card"><h2>Retention (selected episode)</h2><select id="retentionEp" style="margin-bottom:8px"></select><canvas id="retentionChart" class="spark" style="height:120px"></canvas><p class="muted" id="retentionHint"></p></div>
+    </div>
+    <div class="card"><h2>Per-episode KPIs</h2><div id="perEpTable"></div></div>
+    <div class="card"><h2>Feedback loop</h2><p class="muted">Publish → Analytics → retention drop on <code>scene</code> → Story Agent suggestion → next episode. Derived from timeline + QC; YouTube API not connected — values are deterministic mocks seeded by <code>episode_id</code>.</p><pre id="feedbackPre" style="margin-top:8px"></pre></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="page-settings" class="page">
+    <div class="card" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <h2 style="margin:0">Settings</h2>
+      <span class="pill warn" id="settingsDirty" style="display:none">unsaved changes</span>
+      <span class="muted" id="settingsStatus" style="margin-left:8px;flex:1"></span>
+      <button class="btn ghost sm" onclick="renderSettings()">Reset</button>
+      <button class="btn sm" id="saveSettingsBtn" onclick="saveSettings()">Save changes</button>
+    </div>
+    <div class="card"><h2>All Free Models — from zworkforce/.env.ai <span class="pill good">no cost</span></h2><div id="freeCatalog" class="muted">loading…</div><p class="muted" style="margin-top:6px">Every feature has a <b style="color:var(--ok)">FREE</b> option. Keys from <code>/home/cvsz/zworkforce/.env.ai</code> are auto-loaded (OLLAMA, OPENROUTER, NVIDIA, OPENCODE, KILO, HF, GEMINI, GROQ). Use ✨ Apply FREE preset or pick individually. Env overrides win.</p></div>
+    <div class="grid2">
+      <div class="card"><h2>Providers</h2><div id="providersEdit"></div><div id="providersEnvWarn" class="muted" style="margin-top:8px"></div></div>
+      <div class="card"><h2>Budgets</h2><div id="budgetsEdit"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>Audio</h2><div id="audioEdit"></div></div>
+      <div class="card"><h2>Retry & Gates</h2><div id="retryEdit"></div></div>
+    </div>
+    <div class="card"><h2>Baselines</h2><div id="baselinesEdit"></div></div>
+    <div class="card"><h2>System (read-only)</h2><div id="systemView"></div></div>
+  </section>
+
+  <!-- EPISODE DETAIL (shared, also reachable via #/ep/EP001) -->
+  <section id="page-episode-detail" class="page">
+    <button class="btn ghost sm" onclick="navigate('episodes')">← Back to Episodes</button>
+    <div id="detailHost" style="margin-top:10px"></div>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><img id="lbImg"><div class="meta" id="lbMeta"></div></div>
+<div class="modal" id="charModal" onclick="if(event.target===this)this.classList.remove('on')"><div class="box"><h2 id="charModalTitle">New character</h2><div id="charForm"></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn ghost" onclick="closeCharModal()">Cancel</button><button class="btn" onclick="saveChar()">Save</button></div></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+let selected=null,detail=null,eventSource=null,assetsOffset=0;
+const j=async(url,opt)=>{const r=await fetch(url,opt);let d={};try{d=await r.json()}catch{}return{code:r.status,data:d,ok:r.ok}};
+
+// --- nav ---
+document.querySelectorAll('#nav li').forEach(li=>li.onclick=()=>navigate(li.dataset.page));
+function navigate(page){
+  document.querySelectorAll('#nav li').forEach(li=>li.classList.toggle('on',li.dataset.page===page));
+  document.querySelectorAll('main .page').forEach(p=>p.classList.remove('on'));
+  const el=document.getElementById('page-'+page);
+  if(el) el.classList.add('on');
+  $('#pageTitle').textContent=page.charAt(0).toUpperCase()+page.slice(1);
+  location.hash=page;
+  if(page==='dashboard') renderDashboard();
+  if(page==='episodes') { loadEpisodes(); }
+  if(page==='characters') loadCharacters();
+  if(page==='assets') loadAssets();
+  if(page==='queue') renderQueue();
+  if(page==='analytics') renderAnalytics();
+  if(page==='settings') renderSettings();
+}
+window.addEventListener('hashchange',()=>{
+  const h=location.hash.replace('#','')||'dashboard';
+  if(h.startsWith('ep/')){ selected=h.split('/')[1]; openEpisodeDetail(selected); return; }
+  navigate(h);
+});
+
+// --- helpers ---
+function gateRow(g){
+  const cls=g.status==='approved'?'ok':g.status==='rejected'?'bad':'open';
+  const n=g.gate||g.label.match(/(\d)/)?.[1]||'?';
+  return `<div class="gate"><span class="dot ${cls}"></span><span style="min-width:220px">${g.label}</span><span class="pill ${g.status==='approved'?'good':g.status==='rejected'?'bad':''}" style="margin-left:auto">${g.status}${g.approver?' · '+g.approver:''}</span><button class="btn ghost sm" onclick="gateAct(${n},'approve')">Approve</button><button class="btn ghost sm" onclick="gateAct(${n},'reject')">Reject</button></div>`;
+}
+async function gateAct(gate,action){
+  if(!selected) return;
+  const note=prompt(`${action} GATE ${gate} for ${selected} — note (optional):`,'')||'';
+  const{code,data}=await j('/api/gates/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify({ep:selected,gate,note})});
+  if(!code.toString().startsWith('2')) alert(data.error||('Error '+code)); else {await loadDetail(); renderDashboard();}
+}
+function sparkline(canvas,points,color){
+  const ctx=canvas.getContext('2d'),W=canvas.width=canvas.clientWidth*2,H=canvas.height=canvas.clientHeight*2;
+  ctx.clearRect(0,0,W,H); if(!points.length) return;
+  const min=Math.min(...points),max=Math.max(...points),pad=18;
+  const sx=i=>pad + i/(points.length-1||1)*(W-pad*2), sy=v=>H-pad - (v-min)/((max-min)||1)*(H-pad*2);
+  ctx.strokeStyle=color||'#7aa2ff'; ctx.lineWidth=2; ctx.beginPath();
+  points.forEach((v,i)=> i?ctx.lineTo(sx(i),sy(v)):ctx.moveTo(sx(i),sy(v))); ctx.stroke();
+  ctx.fillStyle=color||'#7aa2ff'; points.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),3,0,Math.PI*2);ctx.fill();});
+}
+function barChart(canvas,labels,values,color){
+  const ctx=canvas.getContext('2d'),W=canvas.width=canvas.clientWidth*2,H=canvas.height=canvas.clientHeight*2;
+  ctx.clearRect(0,0,W,H); if(!values.length) return;
+  const max=Math.max(...values,1),bw=(W-40)/values.length*0.7;
+  values.forEach((v,i)=>{const x=20+i*(W-40)/values.length+4, h=(v/max)*(H-40), y=H-20-h; ctx.fillStyle=color||'#7aa2ff'; ctx.fillRect(x,y,bw,h);});
+}
+
+// --- dashboard ---
+async function renderDashboard(){
+  const {data}=await j('/api/analytics/overview');
+  const k=data.kpis||{};
+  $('#kpiRow').innerHTML=`
+    <div class="card"><div class="val">${k.episodes||0}</div><div class="lbl">Episodes</div></div>
+    <div class="card"><div class="val">${k.master_ready||0}</div><div class="lbl">Master ready</div></div>
+    <div class="card"><div class="val">${k.total_jobs||0}</div><div class="lbl">Jobs</div></div>
+    <div class="card"><div class="val">$${k.total_cost_usd||0}</div><div class="lbl">Total cost</div><div class="muted">$${k.avg_cost_per_episode||0}/ep</div></div>
+    <div class="card"><div class="val">${k.failed_rate||0}%</div><div class="lbl">Failed rate</div></div>
+  `;
+  const per=data.per_episode||[];
+  sparkline($('#budgetSpark'), per.map(p=>p.mock_ctr), '#7aa2ff');
+  $('#budgetLegend').textContent = per.length? `CTR mock across ${per.length} episodes · avg ${(per.reduce((a,b)=>a+b.mock_ctr,0)/per.length).toFixed(1)}%` : '';
+  const eps=(await j('/api/episodes')).data.episodes||[];
+  $('#dashEps').innerHTML=eps.slice(0,6).map(e=>`<li style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid rgba(255,255,255,.06)"><span><b>${e.episode_id}</b> <span class="muted">${e.title||''}</span></span><span class="pill ${e.state==='master-ready'?'good':''}">${e.state}</span></li>`).join('') || '<p class="muted">No episodes</p>';
+  // gate health: count per gate across episodes
+  const gateCounts={1:{approved:0,open:0},2:{approved:0,open:0},3:{approved:0,open:0},4:{approved:0,open:0},5:{approved:0,open:0}};
+  for(const e of eps.slice(0,10)){
+    const st=(await j('/api/status?ep='+e.episode_id)).data;
+    (st.gates||[]).forEach(g=>{const c=gateCounts[g.gate]; if(c) g.status==='approved'?c.approved++:c.open++;});
+  }
+  $('#gateHealth').innerHTML=Object.entries(gateCounts).map(([n,c])=>`<div class="kv"><span>GATE ${n}</span><b>${c.approved} ✓ · ${c.open} open</b></div>`).join('');
+}
+
+// --- episodes ---
+let episodesCache=[];
+async function loadEpisodes(){
+  const search=$('#globalSearch').value.trim();
+  const {data}=await j('/api/episodes'+(search?'?search='+encodeURIComponent(search):''));
+  let eps=data.episodes||[];
+  const stateFilter=$('#filterState').value;
+  if(stateFilter) eps=eps.filter(e=>e.state===stateFilter);
+  const sort=$('#sortBy').value;
+  if(sort==='title') eps.sort((a,b)=>a.title.localeCompare(b.title));
+  else if(sort==='jobs') eps.sort((a,b)=>b.jobs-a.jobs);
+  episodesCache=eps;
+  $('#epsCount').textContent=eps.length;
+  $('#episodesTable').innerHTML=`
+    <table><tr><th>Episode</th><th>Title</th><th>State</th><th>Jobs</th><th>Learning</th><th></th></tr>
+    ${eps.map(e=>`<tr>
+      <td><b>${e.episode_id}</b></td><td>${e.title||''}</td>
+      <td><span class="pill ${e.state==='master-ready'?'good':''}">${e.state||''}</span></td>
+      <td>${e.jobs}</td><td class="muted">${e.learning_goal||''}</td>
+      <td><button class="btn ghost sm" onclick="openEpisodeDetail('${e.episode_id}')">Open</button></td>
+    </tr>`).join('')}
+  </table>
+  ${!eps.length?'<p class="muted" style="margin-top:8px">No episodes match.</p>':''}
+  `;
+}
+function openEpisodeDetail(ep){ selected=ep; location.hash='ep/'+ep; document.querySelectorAll('main .page').forEach(p=>p.classList.remove('on')); $('#page-episode-detail').classList.add('on'); $('#pageTitle').textContent=ep; loadDetail(); }
+async function loadDetail(){
+  if(!selected) return;
+  const{code,data}=await j('/api/detail?ep='+selected);
+  const st=(await j('/api/status?ep='+selected)).data;
+  if(code!==200){$('#detailHost').innerHTML=`<p class="muted">${data.error||'error'}</p>`;return;}
+  detail={detail:data,status:st};
+  const s=st, d=data, tl=d.timeline;
+  const total=tl? (tl.tracks.video||[]).reduce((m,c)=>Math.max(m,c.start+c.duration),0):0;
+  const renders=(s.renders||[]).map(r=>{
+    const rel=r.path?r.path.split('/episodes/')[1]:'';
+    return rel.endsWith('.mp4')?`<video class="main" controls preload="metadata" src="/media/${rel}"></video><div class="row" style="justify-content:space-between;margin-top:6px"><span class="pill">${r.mode} · ${r.qc_state} · ${Number(r.duration||0).toFixed(1)}s</span><a class="pill" href="/media/${rel}" download>Download</a></div>`:'';
+  }).join('');
+  $('#detailHost').innerHTML=`
+    <div class="card">
+      <h2>${s.title||s.episode_id} <span class="pill">${s.episode_id}</span> <span class="pill ${s.gates[4]?.status==='approved'?'good':''}">${s.gates[4]?.status||''}</span></h2>
+      <div class="kv"><span>Topic</span><b>${s.topic||'—'}</b></div><div class="kv"><span>Learning goal</span><b>${s.learning_goal||'—'}</b></div><div class="kv"><span>Scenes</span><b>${s.scenes}</b></div><div class="kv"><span>Total</span><b>${total?total.toFixed(1)+'s':'—'}</b></div>
+      <hr class="sep"><h2>Gates</h2>${(s.gates||[]).map(gateRow).join('')}
+      <hr class="sep"><h2>Queue <span class="pill">${s.jobs.total} jobs</span></h2><div class="bars">${Object.entries(s.jobs.by_state).map(([k,v])=>`<span class="bar ${k}">${k}: ${v}</span>`).join('')}</div>
+      <details style="margin-top:6px"><summary class="muted" style="cursor:pointer">Job table (${d.jobs.length})</summary><table><tr><th>Job</th><th>Kind</th><th>State</th><th>Attempts</th><th>Provider</th></tr>${d.jobs.map(j=>`<tr><td><code style="font-size:10px">${j.job_id}</code></td><td>${j.kind}</td><td><span class="bar ${j.state}" style="font-size:10px">${j.state}</span></td><td>${j.attempts}/${j.max_retries}</td><td>${j.provider}</td></tr>`).join('')}</table></details>
+      <hr class="sep"><h2>Budget</h2><div class="kv"><span>Images</span><b>${s.budget.images_used}/${s.budget.images_limit}</b></div><div class="kv"><span>Videos</span><b>${s.budget.videos_used}/${s.budget.videos_limit}</b></div><div class="kv"><span>Cost</span><b>$${s.budget.cost_usd} / $${s.budget.cost_limit_usd}</b></div>
+      <hr class="sep"><h2>Renders</h2>${renders||'<p class="muted">No renders.</p>'}
+    </div>
+    <div class="card"><div class="tabs"><button class="tab on" onclick="switchDetailTab('stills',this)">Stills</button><button class="tab" onclick="switchDetailTab('timeline',this)">Timeline</button><button class="tab" onclick="switchDetailTab('storyboard',this)">Storyboard</button><button class="tab" onclick="switchDetailTab('qc',this)">QC</button><button class="tab" onclick="switchDetailTab('assets',this)">Assets</button></div>
+      <div id="d-stills"></div><div id="d-timeline" style="display:none"></div><div id="d-storyboard" style="display:none"></div><div id="d-qc" style="display:none"></div><div id="d-assets" style="display:none"></div>
+    </div>
+  `;
+  renderDetailTabs(d, tl);
+}
+function switchDetailTab(name,btn){
+  btn.parentElement.querySelectorAll('.tab').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  ['stills','timeline','storyboard','qc','assets'].forEach(n=>document.getElementById('d-'+n).style.display=n===name?'block':'none');
+}
+function renderDetailTabs(d, tl){
+  // stills
+  const stills=d.stills||[];
+  document.getElementById('d-stills').innerHTML = stills.length? `<div class="gallery">${stills.map(s=>{
+    const prov=s.prov, gen=prov?prov.generator:null, label=(prov?.scene_id||s.file.split('/').pop()).replace('.png','');
+    return `<figure onclick="openLightbox('/media/${s.file}','${label} · ${gen?gen.provider:''}')">
+      <img loading="lazy" src="/media/${s.file}"><figcaption><b>${label}</b><br><span class="muted">${gen?gen.provider+' · '+(gen.model||''):''}</span></figcaption></figure>`;
+  }).join('')}</div>` : '<p class="muted">No stills.</p>';
+  // timeline
+  if(!tl) document.getElementById('d-timeline').innerHTML='<p class="muted">No timeline.</p>';
+  else {
+    const tracks=tl.tracks||{}, total=(tl.tracks.video||[]).reduce((m,c)=>Math.max(m,c.start+c.duration),0)||1;
+    const lane=(name,clips,cls)=> clips && clips.length ? `<div class="track"><label>${name}</label>${clips.map(c=>`<div class="clip ${cls}" style="left:${(c.start/total*100).toFixed(2)}%;width:${(c.duration/total*100).toFixed(2)}%" title="${(c.text||c.label||c.scene_id||'').replace(/"/g,'&quot;')}">${(c.scene_id||c.clip_id||'').slice(0,7)}</div>`).join('')}</div>` : '';
+    document.getElementById('d-timeline').innerHTML=`<div class="kv"><span>FPS</span><b>${tl.fps}</b></div><div class="kv"><span>Resolution</span><b>${tl.width}×${tl.height}</b></div><div class="kv"><span>Total</span><b>${total.toFixed(1)}s</b></div>${lane('video',tracks.video,'video')}${lane('voice',tracks.voice,'voice')}${lane('music',tracks.music,'music')}${lane('sfx',tracks.sfx,'sfx')}`;
+  }
+  // storyboard
+  const sb=d.storyboard;
+  document.getElementById('d-storyboard').innerHTML = sb ? `<table><tr><th>Shot</th><th>Scene</th><th>Type</th><th>Camera</th><th>Dur</th></tr>${sb.shots.map(s=>`<tr><td>${s.shot_id}</td><td>${s.scene_id}</td><td><span class="bar ${s.type}">${s.type}</span>${s.reusable?' <span class="pill">reusable</span>':''}</td><td>${s.camera.shot||''}</td><td>${s.duration_target}s</td></tr>`).join('')}</table>` : '<p class="muted">No storyboard.</p>';
+  // qc
+  const qc=d.qc||[];
+  document.getElementById('d-qc').innerHTML = qc.length ? qc.map(r=>`<div class="gate" style="border:1px solid ${r.passed?'rgba(93,211,158,.2)':'rgba(255,107,129,.25)'};margin:4px 0"><span class="dot ${r.passed?'ok':'bad'}"></span><span>${r.target.split('/').slice(-2).join('/')}</span><span class="pill ${r.passed?'good':'bad'}" style="margin-left:auto">${r.passed?'PASS':'FAIL'}</span></div>`).join('') : '<p class="muted">No QC.</p>';
+  // assets
+  document.getElementById('d-assets').innerHTML = `<table><tr><th>Asset</th><th>Kind</th><th>Scene</th><th>Provider</th><th>Approved</th></tr>${(d.assets||[]).map(a=>`<tr><td><a href="/media/${(a.path.split('/episodes/')[1]||'').replace(/\\/g,'/')}" target="_blank">${a.asset_id}</a></td><td>${a.kind}</td><td>${a.scene_id||'—'}</td><td>${a.provenance?.generator?.provider||'—'}</td><td>${a.approved?'<span class="pill good">yes</span>':'<span class="pill">no</span>'}</td></tr>`).join('')}</table>`;
+}
+
+// --- characters ---
+let editingChar=null;
+async function loadCharacters(){
+  const {data:series}=await j('/api/series');
+  $('#seriesView').innerHTML = series && !series.error ? `
+    <div class="kv"><span>Name</span><b>${series.name}</b></div><div class="kv"><span>Audience</span><b>${series.audience}</b></div><div class="kv"><span>Episode target</span><b>${series.episode_duration_target_sec}s</b></div><div class="kv"><span>Genre</span><b>${(series.genre||[]).join(', ')}</b></div><div class="kv"><span>Topics</span><b>${(series.learning_topics||[]).join(', ')}</b></div>
+    <div class="kv"><span>Visual style</span><b>${series.visual_style?.type||''} · ${series.visual_style?.palette||''}</b></div>
+    <button class="btn ghost sm" style="margin-top:8px" onclick="editSeries()">Edit series</button>
+    <details style="margin-top:8px"><summary class="muted" style="cursor:pointer">Raw JSON</summary><pre>${JSON.stringify(series,null,2)}</pre></details>
+  ` : '<p class="muted">No series bible. <button class="btn ghost sm" onclick="editSeries()">Create</button></p>';
+  const {data}=await j('/api/characters');
+  const chars=data.characters||[];
+  $('#castCount').textContent=chars.length;
+  $('#castGrid').innerHTML = chars.map(c=>`
+    <figure style="cursor:pointer" onclick="openCharModal('${c.character_id}')">
+      <div style="height:120px;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:36px">🐰</div>
+      <figcaption><b>${c.name}</b> <span class="pill">${c.character_id}</span><br><span class="muted">${c.species} · ${c.age_appearance||''}</span><br><span class="muted">${(c.personality||[]).slice(0,3).join(', ')}</span></figcaption>
+    </figure>
+  `).join('') || '<p class="muted">No characters.</p>';
+}
+async function editSeries(){
+  const {data}=await j('/api/series');
+  if(data.error) {const name=prompt('Series name?','Mimi\'s Little World'); if(!name) return; await j('/api/series',{method:'PUT',headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify({series_id:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name,audience:'4-7'})}); loadCharacters(); return;}
+  const nv=prompt('Edit series JSON (name field as example):', JSON.stringify({name:data.name},null,2));
+  if(!nv) return;
+  try{const p=JSON.parse(nv); const merged={...data, ...p}; await j('/api/series',{method:'PUT',headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify(merged)}); loadCharacters();}catch(e){alert(e)}
+}
+function openCharModal(id){
+  editingChar=id||null;
+  $('#charModalTitle').textContent=id?'Edit '+id:'New character';
+  if(id){
+    j('/api/characters/'+id).then(({data})=>{
+      $('#charForm').innerHTML=`<label>Character JSON</label><textarea id="charJson" rows="14">${JSON.stringify(data,null,2)}</textarea><p class="muted">Master prompt is derived from <code>never_change</code> + look. Save triggers <code>CharacterSpec</code> validation.</p>`;
+      $('#charModal').classList.add('on');
+    });
+  } else {
+    $('#charForm').innerHTML=`<label>Character JSON</label><textarea id="charJson" rows="14">${JSON.stringify({character_id:"NEKO-001",name:"Neko",species:"cat",age_appearance:"childlike",look:{body:["short body"],face:["round face"],fur:["orange"],clothing:["red scarf"]},personality:["curious"],signature_actions:[],never_change:["fur color"]},null,2)}</textarea>`;
+    $('#charModal').classList.add('on');
+  }
+}
+function closeCharModal(){ $('#charModal').classList.remove('on'); editingChar=null; }
+async function saveChar(){
+  const txt=$('#charJson').value;
+  try{
+    const payload=JSON.parse(txt);
+    const url=editingChar?'/api/characters/'+editingChar:'/api/characters';
+    const method=editingChar?'PUT':'POST';
+    const{code,data}=await j(url,{method,headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify(payload)});
+    if(!code.toString().startsWith('2')) alert(data.error||('Error '+code)); else {closeCharModal(); loadCharacters();}
+  }catch(e){alert(e)}
+}
+
+// --- assets library ---
+async function loadAssets(more){
+  if(!more) assetsOffset=0;
+  const kind=$('#assetKind').value, provider=$('#assetProvider').value, search=$('#assetSearch').value.trim();
+  const url=`/api/assets?limit=24&offset=${assetsOffset}`+(kind?'&kind='+kind:'')+(provider?'&provider='+provider:'')+(search?'&search='+encodeURIComponent(search):'');
+  const{data}=await j(url);
+  const assets=data.assets||[];
+  if(!more) $('#assetsGrid').innerHTML='';
+  $('#assetsCount').textContent=data.total||assets.length;
+  const grid=$('#assetsGrid');
+  assets.forEach(a=>{
+    const isImg=a.kind==='still' && a.path && a.path.endsWith('.png');
+    const thumb=isImg?`/media/${a.path.split('/episodes/')[1]}`:'';
+    const fig=document.createElement('figure');
+    fig.innerHTML=`${isImg?`<img loading="lazy" src="${thumb}">`:`<div style="height:100px;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:22px">${a.kind==='video'?'🎬':a.kind==='voice'?'🎙':'🎵'}</div>`}<figcaption><b>${a.asset_id}</b><br><span class="pill">${a.kind}</span> <span class="pill">${a.episode_id||''}</span> <span class="muted">${a.provenance?.generator?.provider||''}</span></figcaption>`;
+    fig.onclick=()=>{alert(JSON.stringify(a.provenance,null,2).slice(0,900));};
+    grid.appendChild(fig);
+  });
+  assetsOffset+=assets.length;
+  $('#assetsMore').style.display=(data.total>assetsOffset)?'block':'none';
+}
+
+// --- queue ---
+async function renderQueue(){
+  const eps=(await j('/api/episodes')).data.episodes||[];
+  let allJobs=[];
+  for(const e of eps.slice(0,5)){
+    const d=(await j('/api/detail?ep='+e.episode_id)).data;
+    (d.jobs||[]).forEach(j=>allJobs.push({...j,episode_id:e.episode_id}));
+  }
+  const byState={};
+  allJobs.forEach(j=>byState[j.state]=(byState[j.state]||0)+1);
+  $('#queueKpi').innerHTML=`
+    <div class="card"><div class="val">${allJobs.length}</div><div class="lbl">Jobs (5 eps)</div></div>
+    <div class="card"><div class="val" style="color:var(--ok)">${byState.APPROVED||0}</div><div class="lbl">Approved</div></div>
+    <div class="card"><div class="val" style="color:var(--warn)">${(byState.PENDING||0)+(byState.GENERATING||0)+(byState.VALIDATING||0)+(byState.RETRY||0)}</div><div class="lbl">In flight</div></div>
+    <div class="card"><div class="val" style="color:var(--bad)">${(byState.MANUAL_REVIEW||0)+(byState.FAILED||0)}</div><div class="lbl">Needs attention</div></div>
+  `;
+  $('#queueTable').innerHTML=`<table><tr><th>Job</th><th>Episode</th><th>Kind</th><th>State</th><th>Attempts</th><th>Provider</th></tr>${allJobs.slice(0,30).map(j=>`<tr><td><code style="font-size:10px">${j.job_id}</code></td><td>${j.episode_id}</td><td>${j.kind}</td><td><span class="bar ${j.state}">${j.state}</span></td><td>${j.attempts}/${j.max_retries}</td><td>${j.provider}</td></tr>`).join('')}</table>` || '<p class="muted">No jobs.</p>';
+  $('#reviewQueue').innerHTML=allJobs.filter(j=>j.state==='MANUAL_REVIEW').length? `<table><tr><th>Job</th><th>Error</th></tr>${allJobs.filter(j=>j.state==='MANUAL_REVIEW').map(j=>`<tr><td>${j.job_id}</td><td class="muted">${(j.error||'').slice(0,80)}</td></tr>`).join('')}</table>` : '<p class="muted">No manual review items — queue healthy.</p>';
+  // budget gauges
+  const budgets=await Promise.all(eps.slice(0,4).map(async e=>{const s=(await j('/api/status?ep='+e.episode_id)).data; return {ep:e.episode_id, b:s.budget};}));
+  $('#budgetGauges').innerHTML=budgets.map(x=>`<div class="card"><h2>${x.ep}</h2><div class="kv"><span>Images</span><b>${x.b.images_used}/${x.b.images_limit}</b></div><div class="kv"><span>Videos</span><b>${x.b.videos_used}/${x.b.videos_limit}</b></div><div class="kv"><span>Cost</span><b>$${x.b.cost_usd} / $${x.b.cost_limit_usd}</b></div></div>`).join('');
+}
+
+// --- analytics ---
+async function renderAnalytics(){
+  const {data}=await j('/api/analytics/overview');
+  const k=data.kpis||{};
+  $('#analyticsKpi').innerHTML=`
+    <div class="card"><div class="val">${k.episodes||0}</div><div class="lbl">Episodes</div></div>
+    <div class="card"><div class="val">${k.master_ready||0}</div><div class="lbl">Master ready</div></div>
+    <div class="card"><div class="val">$${k.avg_cost_per_episode||0}</div><div class="lbl">Avg cost / ep</div></div>
+    <div class="card"><div class="val">${k.failed_rate||0}%</div><div class="lbl">Failed rate</div></div>
+  `;
+  const per=data.per_episode||[];
+  $('#perEpTable').innerHTML=`<table><tr><th>Episode</th><th>CTR</th><th>Avg view</th><th>Completion</th><th>Drop scene</th></tr>${per.map(p=>`<tr><td>${p.episode_id}</td><td>${p.mock_ctr}%</td><td>${p.mock_avg_view_sec}s</td><td>${p.mock_completion}%</td><td>${p.mock_retention_drop_scene||'—'}</td></tr>`).join('')}</table>`;
+  barChart($('#costChart'), per.map(p=>p.episode_id), per.map(p=>p.mock_ctr), '#c3a6ff');
+  // retention selector
+  const sel=$('#retentionEp');
+  if(!sel.options.length){
+    (await j('/api/episodes')).data.episodes.forEach(e=>{const o=document.createElement('option');o.value=e.episode_id;o.textContent=e.episode_id;sel.appendChild(o);});
+    if(per[0]) sel.value=per[0].episode_id;
+    sel.onchange=()=>loadRetention(sel.value);
+  }
+  if(sel.value) loadRetention(sel.value);
+  $('#feedbackPre').textContent=JSON.stringify(per.slice(0,2).map(p=>({episode_id:p.episode_id, drop_scene:p.mock_retention_drop_scene, suggestion: p.mock_retention_drop_scene? "Add close-up on learning beat at that scene" : "Keep pacing"})),null,2);
+}
+async function loadRetention(ep){
+  const {data}=await j('/api/analytics/retention?ep='+ep);
+  if(data.error){$('#retentionHint').textContent=data.error;return;}
+  sparkline($('#retentionChart'), data.points.map(p=>p.retention), '#5dd39e');
+  $('#retentionHint').textContent=data.suggestion+' — '+data.points.map(p=>`${p.scene_id}:${p.retention}%`).join(' · ');
+}
+
+// --- settings (realtime editable) ---
+let _cfgCache=null;
+function markDirty(){const el=$('#settingsDirty'); if(el) el.style.display='inline-block'; const st=$('#settingsStatus'); if(st) st.textContent='unsaved changes — click Save';}
+function clearDirty(){const el=$('#settingsDirty'); if(el) el.style.display='none';}
+function applyFreePreset(){const set=(id,val)=>{const el=document.getElementById(id); if(el) el.value=val;}; set('cfg_llm','meta_free'); set('cfg_image','pollinations'); set('cfg_voice','edge_tts'); set('cfg_music','procedural'); set('cfg_motion','kenburns'); markDirty(); const st=$('#settingsStatus'); if(st){st.textContent='FREE preset applied — click Save to activate (meta muse-spark 1.2 + pollinations flux + edge_tts) — all keys from .env.ai'; st.style.color='var(--ok)';}}
+async function renderSettings(){
+  const cfg=(await j('/api/config')).data, sys=(await j('/api/system/info')).data;
+  _cfgCache=JSON.parse(JSON.stringify(cfg));
+  // free catalog (all free models from .env.ai)
+  try{
+    const {data:fc}=await j('/api/free/catalog');
+    if(fc && fc.llm){
+      const pill=(has)=> has?'<span class="pill good">ready</span>':'<span class="pill bad">no key</span>';
+      const row=(x)=>`<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-top:1px solid rgba(255,255,255,.06)"><span class="pill">${x.provider}</span><span style="flex:1" class="muted">${x.model||''} · ${x.desc||''}</span>${pill(x.has_key)}<span class="muted" style="font-size:10px">${x.env_key||'no key needed'}</span></div>`;
+      const sec=(title,items)=>`<div style="margin:6px 0"><b style="font-size:11px;color:var(--dim)">${title}</b>${items.map(row).join('')}</div>`;
+      $('#freeCatalog').innerHTML= sec('LLM — story/script (all free, no cost)', fc.llm) + sec('Image — cartoon/still', fc.image) + sec('Voice — TTS', fc.voice) + sec('Music/Motion', [...(fc.music||[]), ...(fc.motion||[])]);
+    }
+  }catch(e){ const el=$('#freeCatalog'); if(el) el.textContent='catalog error: '+e; }
+  const env=cfg.providers_env_override||{};
+  const opts={llm:['offline','ollama','openrouter_free','groq_free','gemini_free','nvidia_free','opencode_free','kilocode_free','meta_free','hf_free','zai_free','openai_compat'],image:['procedural_cartoon','pollinations','hf_image','placeholder','google_imagen'],voice:['silent','edge_tts','google_tts'],music:['procedural'],motion:['kenburns','veo']};
+  const freeInfo={ollama:'FREE local 3B', openrouter_free:'FREE OpenRouter', groq_free:'FREE Groq', gemini_free:'FREE Gemini Flash', nvidia_free:'FREE NVIDIA Muse Spark', opencode_free:'FREE OpenCode', kilocode_free:'FREE KiloCode/Z.AI', meta_free:'FREE Meta Llama', hf_free:'FREE HF', zai_free:'FREE ZAI GLM', pollinations:'FREE Flux no key', hf_image:'FREE HF SDXL', edge_tts:'FREE 40+ voices', procedural_cartoon:'FREE offline', kenburns:'FREE ffmpeg', offline:'FREE deterministic', placeholder:'FREE gradient', silent:'FREE silence', procedural:'FREE sine beds'};
+  const sel=(name,val,choices)=>`<select id="cfg_${name}" onchange="markDirty()">${choices.map(c=>`<option value="${c}" ${c===val?'selected':''}>${c}</option>`).join('')}</select>`;
+  const badge=v=> freeInfo[v]?`<span class="pill good" style="margin-left:6px">FREE</span><span class="muted" style="font-size:10px;margin-left:4px">${freeInfo[v]}</span>`:'';
+  $('#providersEdit').innerHTML=`
+    <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="muted">All providers below have <b style="color:var(--ok)">FREE</b> options (no API key).</span><button class="btn ghost sm" onclick="applyFreePreset()">✨ Apply FREE preset</button></div>
+    <label>LLM ${env.llm?`<span class="pill warn">env ZKID_LLM_PROVIDER=${env.llm}</span>`:''} ${badge(cfg.providers?.llm)}</label>${sel('llm',cfg.providers?.llm,opts.llm)}
+    <label>Image ${env.image?`<span class="pill warn">env ZKID_IMAGE_PROVIDER=${env.image}</span>`:''} ${badge(cfg.providers?.image)}</label>${sel('image',cfg.providers?.image,opts.image)}
+    <label>Motion ${env.motion?`<span class="pill warn">env ZKID_MOTION_PROVIDER=${env.motion}</span>`:''} ${badge(cfg.providers?.motion)}</label>${sel('motion',cfg.providers?.motion,opts.motion)}
+    <label>Voice ${env.voice?`<span class="pill warn">env ZKID_VOICE_PROVIDER=${env.voice}</span>`:''} ${badge(cfg.providers?.voice)}</label>${sel('voice',cfg.providers?.voice,opts.voice)}
+    <label>Music ${badge(cfg.providers?.music)}</label>${sel('music',cfg.providers?.music,opts.music)}
+    <p class="muted" style="margin-top:6px">Env overrides win at runtime. <b>FREE</b> = no key, local or free API. Pollinations = free Flux/SD no key · Edge TTS = free Microsoft 40+ voices · Ollama qwen2.5:3b = local 1.9GB free.</p>
+  `;
+  $('#budgetsEdit').innerHTML=`
+    <label>Image generations</label><input type="number" id="cfg_budgets_image_generations" value="${cfg.budgets?.image_generations}" min="1" max="200" oninput="markDirty()">
+    <label>Video generations</label><input type="number" id="cfg_budgets_video_generations" value="${cfg.budgets?.video_generations}" min="1" max="200" oninput="markDirty()">
+    <label>Max retries / scene</label><input type="number" id="cfg_budgets_max_retries" value="${cfg.budgets?.max_retries_per_scene}" min="1" max="10" oninput="markDirty()">
+    <label>Max cost / episode (USD)</label><input type="number" step="0.5" id="cfg_budgets_cost" value="${cfg.budgets?.max_cost_usd_per_episode}" min="0" max="500" oninput="markDirty()">
+  `;
+  $('#audioEdit').innerHTML=`
+    <label>Dialogue LUFS target</label><input type="number" step="0.5" id="cfg_audio_lufs" value="${cfg.audio?.dialogue_lufs_target}" oninput="markDirty()">
+    <label>Music ducking ratio</label><input type="number" step="0.05" min="0" max="1" id="cfg_audio_duck" value="${cfg.audio?.music_ducking_ratio}" oninput="markDirty()">
+    <label>Padding after voice (sec)</label><input type="number" step="0.1" min="0" max="5" id="cfg_audio_pad" value="${cfg.audio?.padding_after_voice_sec}" oninput="markDirty()">
+  `;
+  const gates=[1,2,3,4,5];
+  $('#retryEdit').innerHTML=`
+    <label>Retry max attempts</label><input type="number" id="cfg_retry_max" value="${cfg.retry?.max_attempts||3}" min="1" max="10" oninput="markDirty()">
+    <label>Auto-approve in draft (gates)</label><div class="row">${gates.map(n=>`<label style="text-transform:none;letter-spacing:0;display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" value="${n}" ${cfg.auto_approve_in_draft?.includes(n)?'checked':''} onchange="markDirty()" class="cfg_gate_cb"> Gate ${n}</label>`).join('')}</div>
+    <p class="muted" style="margin-top:6px">Gates checked are auto-approved when producing with <code>--draft</code>. GATE 5 never auto-approves without explicit override.</p>
+  `;
+  $('#baselinesEdit').innerHTML=`
+    <div class="grid2">
+      <div><label>Master width</label><input type="number" id="cfg_master_w" value="${cfg.baselines?.master.width}" oninput="markDirty()"><label>Master height</label><input type="number" id="cfg_master_h" value="${cfg.baselines?.master.height}" oninput="markDirty()"><label>Master FPS</label><input type="number" id="cfg_master_fps" value="${cfg.baselines?.master.fps}" oninput="markDirty()"></div>
+      <div><label>Draft width</label><input type="number" id="cfg_draft_w" value="${cfg.baselines?.draft.width}" oninput="markDirty()"><label>Draft height</label><input type="number" id="cfg_draft_h" value="${cfg.baselines?.draft.height}" oninput="markDirty()"><label>Draft FPS</label><input type="number" id="cfg_draft_fps" value="${cfg.baselines?.draft.fps}" oninput="markDirty()"></div>
+    </div>
+  `;
+  $('#systemView').innerHTML=`
+    <div class="kv"><span>Python</span><b>${sys.python||''}</b></div><div class="kv"><span>FFmpeg</span><b>${(sys.ffmpeg||'').slice(0,60)}</b></div><div class="kv"><span>Episodes disk</span><b>${sys.episodes_disk||''}</b></div><div class="kv"><span>DB</span><b>${sys.db_exists?'yes':'no'} · ${Object.entries(sys.db_tables||{}).map(([k,v])=>k+':'+v).join(', ').slice(0,120)}</b></div>
+    <div class="kv"><span>Baselines (effective)</span><b>master ${sys.baselines?.master.width}x${sys.baselines?.master.height}@${sys.baselines?.master.fps} · draft ${sys.baselines?.draft.width}x${sys.baselines?.draft.height}@${sys.baselines?.draft.fps}</b></div>
+  `;
+  clearDirty(); const st=$('#settingsStatus'); if(st) st.textContent='loaded — edits apply instantly on Save';
+}
+async function saveSettings(){
+  const btn=$('#saveSettingsBtn'); if(btn) btn.disabled=true;
+  const st=$('#settingsStatus'); if(st) st.textContent='saving…';
+  const payload={
+    providers:{llm:$('#cfg_llm').value, image:$('#cfg_image').value, motion:$('#cfg_motion').value, voice:$('#cfg_voice').value, music:$('#cfg_music').value},
+    budgets:{image_generations:parseInt($('#cfg_budgets_image_generations').value), video_generations:parseInt($('#cfg_budgets_video_generations').value), max_retries_per_scene:parseInt($('#cfg_budgets_max_retries').value), max_cost_usd_per_episode:parseFloat($('#cfg_budgets_cost').value)},
+    audio:{dialogue_lufs_target:parseFloat($('#cfg_audio_lufs').value), music_ducking_ratio:parseFloat($('#cfg_audio_duck').value), padding_after_voice_sec:parseFloat($('#cfg_audio_pad').value)},
+    baselines:{master:{width:parseInt($('#cfg_master_w').value), height:parseInt($('#cfg_master_h').value), fps:parseInt($('#cfg_master_fps').value)}, draft:{width:parseInt($('#cfg_draft_w').value), height:parseInt($('#cfg_draft_h').value), fps:parseInt($('#cfg_draft_fps').value)}},
+    retry:{max_attempts:parseInt($('#cfg_retry_max').value)},
+    auto_approve_in_draft:Array.from(document.querySelectorAll('.cfg_gate_cb:checked')).map(cb=>parseInt(cb.value))
+  };
+  const{code,data}=await j('/api/config',{method:'PUT',headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify(payload)});
+  if(btn) btn.disabled=false;
+  if(!code.toString().startsWith('2')){ if(st) st.textContent=data.error||('Error '+code); if(st) st.style.color='var(--bad)'; return; }
+  if(st){ st.textContent='saved — config reloaded'; st.style.color='var(--ok)'; }
+  clearDirty();
+  setTimeout(()=>{ if(st){ st.textContent=''; st.style.color=''; }}, 3000);
+  renderSettings();
+}
+
+// --- produce + search ---
+$('#produce').onclick=async()=>{
+  const btn=$('#produce');btn.disabled=true;
+  $('#produceMsg').textContent='starting…';const logEl=$('#taskLog');logEl.style.display='none';
+  const body={topic:$('#topic').value.trim(),ep:$('#ep').value.trim()||null,draft:$('#draft').checked,auto_approve:$('#approve').checked};
+  const{code,data}=await j('/api/produce',{method:'POST',headers:{'Content-Type':'application/json','X-Auth-Token':$('#token').value.trim()},body:JSON.stringify(body)});
+  btn.disabled=false;
+  if(code===202){
+    $('#produceMsg').textContent='run '+data.task.task_id+' started — streaming logs…';
+    if(eventSource)eventSource.close();
+    eventSource=new EventSource('/api/events?task='+data.task.task_id);
+    eventSource.onmessage=e=>{try{const d=JSON.parse(e.data);logEl.style.display='block';logEl.textContent=d.log_tail||'';$('#produceMsg').textContent=d.state+(d.state!=='running'?' · return '+d.returncode:'');if(d.state!=='running'){eventSource.close();loadEpisodes();loadTasks();renderDashboard();}}catch{}};
+  } else $('#produceMsg').textContent=data.error||('error '+code);
+};
+let searchTimer=null;
+$('#globalSearch').addEventListener('input',()=>{clearTimeout(searchTimer); searchTimer=setTimeout(()=>{if(location.hash==='#episodes'||location.hash==='') loadEpisodes();},400);});
+
+function openLightbox(src,caption){$('#lbImg').src=src;$('#lbMeta').textContent=caption;$('#lightbox').classList.add('on');}
+window.openLightbox=openLightbox;window.gateAct=gateAct;window.openEpisodeDetail=openEpisodeDetail;window.openCharModal=openCharModal;window.closeCharModal=closeCharModal;window.saveChar=saveChar;
+
+try{const s=localStorage.getItem('zkid_token');if(s)$('#token').value=s;}catch{}
+$('#token').addEventListener('change',()=>{try{localStorage.setItem('zkid_token',$('#token').value.trim())}catch{}});
+function toggleTheme(){const d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('zkid_theme', d?'dark':'light')}catch{}; $('#themeToggle').textContent=d?'◐':'◑';}
+try{const t=localStorage.getItem('zkid_theme'); if(t==='light'){document.documentElement.classList.remove('dark'); $('#themeToggle').textContent='◑';} else {document.documentElement.classList.add('dark');}}catch{}
+try{const m=window.matchMedia('(prefers-color-scheme: light)'); if(!localStorage.getItem('zkid_theme') && m.matches){document.documentElement.classList.remove('dark');}}catch{}
+
+async function refreshHealth(){const{code,data}=await j('/api/health');const b=$('#healthBadge');b.textContent=code===200?`healthy · v${data.version}`:'offline';b.className='badge'+(code===200?' ok':'');}
+refreshHealth();renderDashboard();loadEpisodes();(function poll(){j('/api/tasks').then(({data})=>{
+  const ul=$('#tasks'); if(!ul) return; ul.innerHTML='';
+  for(const t of (data.tasks||[]).slice(0,8)){
+    const li=document.createElement('li'); li.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid rgba(255,255,255,.06)';
+    const color=t.state==='done'?'var(--ok)':t.state==='failed'?'var(--bad)':'var(--warn)';
+    li.innerHTML=`<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.topic.slice(0,32)}</span><span class="pill" style="color:${color}">${t.state}</span>`;
+    li.onclick=()=>{const el=$('#taskLog');el.textContent=t.log_tail||'';el.style.display=t.log_tail?'block':'none';$('#produceMsg').textContent=t.state+': '+(t.log_tail?t.log_tail.split('\n').slice(-6).join('\n'):''); if(t.state==='running'&&t.task_id){if(eventSource)eventSource.close();eventSource=new EventSource('/api/events?task='+t.task_id);eventSource.onmessage=e=>{try{const d=JSON.parse(e.data);el.textContent=d.log_tail||'';}catch{}};}};
+    ul.appendChild(li);
+  }
+});setTimeout(poll,7000);})();
+setInterval(refreshHealth,15000);
+// initial route
+const h=location.hash.replace('#','')||'dashboard';
+if(h.startsWith('ep/')){ selected=h.split('/')[1]; document.querySelectorAll('main .page').forEach(p=>p.classList.remove('on')); $('#page-episode-detail').classList.add('on'); $('#pageTitle').textContent=selected; loadDetail(); }
+else navigate(h);
+</script>
+</body>
+</html>

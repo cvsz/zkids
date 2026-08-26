@@ -1,0 +1,119 @@
+factory:
+  db_path: factory.db
+  episodes_dir: episodes
+  templates_dir: templates
+master_baseline:
+  container: mp4
+  video:
+    codec: h264
+    width: 1920
+    height: 1080
+    fps: 30
+    pixel_format: yuv420p
+  audio:
+    codec: aac
+    sample_rate: 48000
+    channels: 2
+draft_baseline:
+  width: 640
+  height: 360
+  fps: 24
+quality_tiers:
+  draft:
+    image_provider: procedural_cartoon
+    motion_provider: kenburns
+    voice_provider: silent
+    music_provider: procedural
+  free:
+    image_provider: pollinations
+    motion_provider: kenburns
+    voice_provider: edge_tts
+    music_provider: procedural
+    llm_provider: ollama
+  production:
+    image_provider: google_imagen
+    motion_provider: veo
+    voice_provider: google_tts
+    music_provider: licensed_library
+free_models:
+  llm:
+  - provider: ollama
+    model: qwen2.5:3b
+    env: OLLAMA_BASE_URL
+    note: local 1.9GB, no key
+  - provider: openrouter_free
+    model: openrouter/free
+    env: OPENROUTER_API_KEY
+    note: OpenRouter free 200/day
+  - provider: nvidia_free
+    model: meta/muse-spark-1.2-contributor
+    env: NVIDIA_API_KEY
+    note: "NVIDIA free \u2014 Muse Spark 1.2"
+  - provider: opencode_free
+    model: qwen/qwen2.5-coder-32b
+    env: OPENCODE_API_KEY
+    note: OpenCode free
+  - provider: kilocode_free
+    model: glm-4.5-flash
+    env: KILO_API_KEY
+    note: KiloCode/Z.AI free GLM
+  - provider: meta_free
+    model: meta-llama/Meta-Llama-3.1-8B-Instruct
+    env: HF_API_KEY
+    note: Meta Llama free via HF
+  - provider: gemini_free
+    model: gemini-2.5-flash-lite
+    env: GEMINI_API_KEY
+    note: Gemini free
+  - provider: groq_free
+    model: openai/gpt-oss-20b
+    env: GROQ_API_KEY
+    note: Groq free
+  - provider: hf_free
+    model: meta-llama/Llama-3.2-3B-Instruct
+    env: HF_API_KEY
+    note: HF free
+  image:
+    provider: pollinations
+    model: flux
+    note: free API, no key, also procedural_cartoon offline
+  voice:
+    provider: edge_tts
+    voices:
+    - en-US-AriaNeural
+    - en-US-AnaNeural (kid)
+    - th-TH-PremwadeeNeural
+    - en-GB-SoniaNeural
+    note: Microsoft Edge neural, free, 40+ langs
+  music:
+    provider: procedural
+    note: offline sine beds, free
+  motion:
+    provider: kenburns
+    note: ffmpeg zoompan+bob, offline, free
+budgets:
+  image_generations: 40
+  video_generations: 35
+  max_retries_per_scene: 3
+  max_cost_usd_per_episode: 50.0
+retry_policy:
+  max_attempts: 3
+  escalation:
+    1: strengthen_character_constraints
+    2: simplify_motion
+    3: manual_review
+gates:
+  auto_approve_in_draft:
+  - 1
+  - 2
+  require_human_publish: true
+audio:
+  dialogue_lufs_target: -16.0
+  music_ducking_ratio: 0.25
+  padding_after_voice_sec: 0.6
+providers:
+  llm: meta_free
+  image: pollinations
+  voice: edge_tts
+  music: procedural
+  motion: kenburns

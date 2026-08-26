@@ -1,0 +1,16 @@
+[Unit]
+Description=zkid AI Kids Cartoon Factory dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=cvsz
+Group=cvsz
+EnvironmentFile=/etc/zkids-web/env
+ExecStart=/home/cvsz/zkid/.venv/bin/python -m zkid.cli --root /home/cvsz/zkid web --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

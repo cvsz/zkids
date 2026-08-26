@@ -1,0 +1,3 @@
+# Copy to terraform.tfvars and fill in; never commit real values.
+cloudflare_account_id = "9afd03fff02846b4ca89caeff350ce56"
+cloudflare_zone_id    = "92d9bfd6cbe3c327519d520e56268cba"

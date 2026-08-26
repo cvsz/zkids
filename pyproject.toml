@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "zkids"
 version = "1.0.0"
-description = "Production-grade control plane and media pipeline for original children's animation."
+description = "Production-grade control plane and media pipeline for original children's animation — free-model factory OS."
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.116,<1",
@@ -13,6 +13,9 @@ dependencies = [
   "jsonschema>=4.25,<5",
   "typer>=0.16,<1",
   "uvicorn>=0.35,<1",
+  "PyYAML>=6.0",
+  "Pillow>=10.0",
+  "httpx>=0.28,<1",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +23,12 @@ production = [
   "boto3>=1.40,<2",
   "psycopg[binary]>=3.2,<4",
   "redis>=6,<7",
+]
+free = [
+  "edge-tts>=7.0,<8",
+]
+google = [
+  "google-genai>=1.0",
 ]
 dev = [
   "pytest>=8.4,<9",
@@ -31,9 +40,10 @@ dev = [
 
 [project.scripts]
 zkids = "zkids.cli:app"
+zkid = "zkid.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/zkids"]
+packages = ["src/zkids", "src/zkid"]
 
 [tool.ruff]
 line-length = 100
@@ -46,8 +56,3 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-
-[tool.mypy]
-python_version = "3.11"
-strict = true
-packages = ["zkids"]

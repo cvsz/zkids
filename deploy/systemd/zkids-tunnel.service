@@ -1,0 +1,14 @@
+[Unit]
+Description=zkids Cloudflare Tunnel connector
+After=network-online.target zkids-web.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/cloudflared-zkids/token.env
+ExecStart=/home/cvsz/zworkforce/bin/cloudflared --no-autoupdate tunnel run --token ${TUNNEL_TOKEN}
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
